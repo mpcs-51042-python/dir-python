@@ -45,7 +45,7 @@ Python's early adopters (like yours truly) largely favored Python for its:
 
 - relatively simple & readable syntax, and culture of writing clean, maintainable code
 - powerful "standard library", code that comes pre-installed with the language to perform a wide variety of tasks
-- pragmatic, **multi-paradigm** approach to programming
+- pragmatic, **multi-paradigm** approach to programming (object-oriented vs functional; interactive vs script)
 - extensibility due to a powerful internal data model and C API
 
 Python's growth in the last few years can be attributed to many factors:
@@ -72,9 +72,9 @@ Python is also written with a focus on **readability**. You'll see people talk a
 
 After seeing the history above, you may wonder, *is Python "complete"*?
 
-Python has reached a level of maturity and stability where breaking changes to the core language are incredibly unlikely.
-Still, every October, a new version of Python comes out, this year it will be 3.14 (pi-py?)
-As a mature language, these new versions are supported for five years.
+Python has reached a level of maturity and stability where breaking changes to the core language are rare. 
+Still, every October a new version of Python is released (for example, 3.13, 3.14, and so on). 
+As a mature language, each Python release is supported for about five years.
 
 This does not mean that code you write today will stop working in five years, but that you'd need to update the version you use for security updates.
 Python you wrote targeting Python 3.10 will probably work just fine on 3.14 without changes, as the language is backwards-compatible.
@@ -93,7 +93,7 @@ The open source community, as well as companies like Microsoft and Google have p
 
 New releases add features, recent version of Python have introduced type-checking, improved concurrency, and major performance enhancements.
 
-If you are curious, take a look at <https://docs.python.org/3.13/whatsnew/3.13.html> to see what was added in Python 3.13.
+If you are curious, take a look at <https://docs.python.org/3.14/whatsnew/3.14.html> to see what was added in Python 3.14.
 
 #### An Open Source, Community Language
 
