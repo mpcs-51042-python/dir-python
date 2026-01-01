@@ -1,0 +1,423 @@
+---
+title: Functional Programming
+jupyter: python3
+---
+
+## Procedural vs. Functional
+
+The style of programming we've been doing is called **imperative** or **procedural**.  Statements run in sequence and change a program's state.
+
+From the "procedural" point of view, a function (procedure) is a set of statements that can be called more than once, we use parameters to make our procedures more reusable.
+
+This is the "recipe" model of programming, 
+a procedure is a recipe: a series of steps to follow to achieve a result.
+
+Our first paradigm, **procedural programming** leans heavily on the constructs we've seen: loops, conditionals, and the use of functions to break large procedures into smaller ones.
+
+Some languages make a distinction between procedures and functions. In Python we don't make this distinction, but we will soon see another style of programming where we'll think differently about how we use functions.
+
+Benefits of procedures (functions):
+
+- Encapsulation: package logic so "user" does not need to understand *implementation*, only *interface*.
+- Avoid copy/paste to repeat same task: maximize code reuse and minimize redundancy.
+- Procedural decomposition: split our program into subtasks (i.e., functions) with separate roles.
+    - Small functions are easier to test, easier to write, and easier to refactor.
+    - Makes life easier for debugging, testing, doing maintenance on code.
+
+## Functional Programming
+
+Languages like LISP, Haskell, and Racket are purely functional & differ significantly from procedural & object-oriented languages.
+
+Functional programming uses a definition of functions more compatible with the mathematical definition. Instead of the recipe model of procedural programming, mathematical functions take input(s) and return an output. 
+
+These functions do not have the concept of "state": the same call with the same parameters always results in the same result.
+that is, calling a function in math creates a mapping from inputs to outputs.
+
+When we call `sin(x)` we do not speak of it modifying its inputs, just returning a value.
+
+Similarly, when we workin a functional style we'll often write smaller functions that we chain together, instead of long procedures that rely on internal state.
+
+Python has many features that stem from pure functional languages & support functional programming:
+
+- Functions as first class objects
+- Lambda expressions
+- map/filter
+- `functools`
+- comprehensions
+
+## Functions as "first-class objects"
+
+A key feature of Python that makes it possible to write code in the functional style is the fact that functions are objects. (Everything in Python is an object.)
+
+This means functions don't have special rules about how they can be used compared to other types, any variable can reference a function. (Remember, a variable is an association between a name & object.)
+
+
+```{python}
+#| tags: []
+def echo(message):
+    print(message, message)
+    
+print(f"echo = {echo}")
+print(f"type(echo) = {type(echo)}")
+```
+
+```{python}
+# we can assign names to objects, including functions
+x = echo
+x("hello")
+```
+
+```{python}
+id(x), id(echo)
+```
+
+```{python}
+# we can also store functions in other types, like list
+func_list = [print, echo, print, echo]
+for i, func in enumerate(func_list):
+    func(i)
+```
+
+```{python}
+# dictionaries too
+func_mapping = {False: print, True: echo}
+
+print_twice = True
+func_mapping[True]("twice")
+
+print_twice = False
+func_mapping[print_twice]("once")
+```
+
+
+```{python}
+# we can pass functions into other functions
+def add(a, b):
+    return a + b
+
+def sub(a, b):
+    return a - b
+
+def perform_op(op_func, a, b):
+    return op_func(a, b)
+
+print("add, 3, 4 = ", perform_op(add, 3, 4))
+print("sub, 3, 4 = ", perform_op(sub, 3, 4))
+```
+
+```{python}
+# and we can return functions from other functions
+def get_op(name):
+    if name == "div":
+        def f(a, b):
+            return a / b
+    elif name == "mod":
+        def f(a, b):
+            return a % b
+    return f
+```
+
+```{python}
+#| tags: []
+fn = get_op("mod")
+fn(100, 5)
+#perform_op(fn, 10, 3)
+```
+
+### `sorted` example
+
+It isn't uncommon in Python for functions to take other functions, let's look at `sorted`
+
+```{python}
+help(sorted)
+```
+
+```{python}
+#| tags: []
+d = [("Nick", 1), ("Nick", -100), ("Yusong", 9000), ("Emma", 100)]
+
+def second_key(item):
+    return item[1]
+
+def negate(item):
+    return -item[1]
+
+```
+
+```{python}
+# default sort
+sorted(d)    
+```
+
+```{python}
+sorted(d, key=negate)
+```
+
+```{python}
+sorted(d, key=second_key)
+```
+
+## lambda functions
+
+Python also provides another way to generate function objects.
+
+These are called lambda functions (aka anonymous functions), which:
+
+- Are expressions that return a function object that can be called later without providing a name (hence ``anonymous")
+- Can be used in places where def statement is not syntactically legal (inside a literal list, inlined as a function argument, etc.)
+
+The body of an lambda function is a single expression, not a block of statements.  The body is similar to a return statement in a def statement.
+
+```python
+
+lambda arg1, arg2: expression
+
+# essentially the same as
+
+def __(arg1, arg2):
+    return expression
+```
+
+(0 or more arguments, but *must* have an expression)
+
+### Reminder: expressions vs. statements
+
+Remember that expressions evaluate to a value, and can be assigned to a variable.
+
+Expresssions are valid in assignment, function calls, sequence values, etc.  (Anywhere a value is needed.)
+
+When it comes to `lambda`:
+* a `lambda` defines a function that maps input to a single expression, `def` can be used if statements are needed
+* a `lambda` is itself an expression, it can be used anywhere other expresssions are needed
+
+As an expression, `lambda` can be used as a parameter:
+
+```{python}
+perform_op(lambda a, b: a * b, 5, 6)
+```
+
+```{python}
+words = ["abc", "Abb", "aaa", "ABC", "AAB"]
+sorted(words)
+```
+
+```{python}
+sorted(words, key=lambda s: s.upper())
+```
+
+```{python}
+# can be assigned to a variable
+mul = lambda a, b: a * b
+mul(5, 6)
+
+# same as
+def mul2(a, b):
+    return a * b
+```
+
+```{python}
+#| tags: []
+type(mul), type(mul2)
+```
+
+**General rule: If you're giving a lambda a name, use a function.**
+
+
+## Functional Methods
+
+Python has several built in methods that are useful when writing programs with a functional mindset.
+
+`map`, `filter`, `functools`
+
+### map
+
+`map(function, iterable1, [...iterableN])`
+
+Returns a new iterable that calls `function` with parameters from `iterable1 ... iterableN`.
+
+```{python}
+#| tags: []
+def add_two(x):
+    print("called add_two", x)
+    return x + 2
+
+for x in map(add_two, [1, 2, 3]):
+    print(x)
+```
+
+```{python}
+#| tags: []
+help(map)
+```
+
+```{python}
+#| tags: []
+x = list(map(add_two, [1, 2, 3]))
+print(x)
+```
+
+```{python}
+#| tags: []
+# commonly used with lambdas
+for x in map(lambda x, y: x+y, ("A", "B", "C"), ["!", "?", "."]):
+    print(x)
+```
+
+```{python}
+# number of parameters must match number of iterables
+for x in map(lambda x, y, z: x+(y*z), ("A", "B", "C"), ["!", "?", "."], [2, 3, 4]):
+    print(x)
+```
+
+```{python}
+#| tags: []
+# operator module contains all of the common operators in function form
+import operator
+operator.sub(20, 5)
+```
+
+`map` returns a special kind of *iterable*, can be wrapped in things other than list.
+
+```{python}
+set(map(operator.sub, [20, 19], [10, 9]))
+```
+
+```{python}
+# can use anywhere you can use an iterable
+tuple(map(lambda x: x * 3, ("A", "B", "C")))
+```
+
+### filter
+
+`filter(function, iterable)` 
+
+returns an iterable that contains all items from iterable for which `function(item)` returns True
+
+We call this kind of function a *predicate*.
+
+```{python}
+list(filter(lambda s: s.isupper(), ["a", "ABC", "AbCdeF", "XYZ", ""]))
+```
+
+```{python}
+#| tags: []
+list(map(lambda s: s*2, filter(str.isupper, ["a", "ABC", "AbCdeF", "XYZ"])))
+```
+
+```{python}
+#| tags: []
+list(filter(str.isupper, map(lambda s: s.title(), ["a", "ABC", "AbCdeF", "XYZ"])))
+```
+
+```{python}
+#| tags: []
+list(map(lambda s: s.lower(), filter(lambda s: s.isupper(), ["a", "ABC", "AbCdeF", "XYZ"])))
+```
+
+### functools
+
+<https://docs.python.org/3/library/functools.html>
+
+```{python}
+import functools
+[name for name in dir(functools) if name[0].islower()]
+```
+
+``functools.reduce(function, iterable[, initializer])``
+
+Apply ``function`` to pairs of items successively and return a single value as the result. You can optionally specify the initial value.
+
+```{python}
+import functools 
+import operator 
+
+# accumulator = 0
+# for item in my_list:
+#     accumulator += item
+
+# 1st iteration: Call operator.add(1,2) -> 3 
+# 2nd iteration: Call operator.add(3,3) -> 6 
+# 3rd iteration: Call operator.add(6,4) -> 10 
+# final result = 10 
+functools.reduce(operator.add, [1,2,3,4])
+```
+
+```{python}
+names = ["Ben", "Martha", "Susan"]
+# 1st iteration: call f(0, "Ben") -> 0 + len("Ben") -> 3
+# 2nd iteration: call f(3, "Martha") -> 3 + len("Martha") -> 9
+# 3rd iteration: call f(9, "Susan") -> 9 + len("Susan") -> 14
+functools.reduce(lambda accumulator, new_val: accumulator + len(new_val), 
+                 names, 
+                 0)
+```
+
+```{python}
+# What happens if you pass in an initial value 
+# 1st iteration: Call operator.mul(2,1) -> 2 
+# 2nd iteration: Call operator.mul(2,2) -> 4 
+# 3rd iteration: Call operator.mul(4,3) -> 12 
+# 4th iteration: Call operator.mul(12,4) -> 48 
+# Final result = 48 
+functools.reduce(operator.mul, [1,2,3,4], 2)
+```
+
+```{python}
+#| tags: []
+functools.reduce(lambda a,b: a+b, [1, 2, 3])
+```
+
+```functools.partial(func, *args, **kwargs)```
+
+`functools.partial` returns a new function that "binds" any passed args & kwargs, and leaves other parameters unbound.
+
+```{python}
+import operator
+operator.mul(2, 10)
+```
+
+```{python}
+import functools
+negate = functools.partial(operator.mul, -1)
+negate(5)
+```
+
+```{python}
+list(map(negate, [1, 2, 3, 4]))
+```
+
+```{python}
+def calls_twice(f):
+    print(f())
+    print(f())
+    
+
+g = functools.partial(operator.mul, 4, 4)
+#print(g())
+calls_twice(g)
+
+```
+
+```{python}
+print_ex = functools.partial(print, sep="!")
+print_ex("a", "b", "c")
+```
+
+```python
+# ERROR: parameters must be valid
+print_foo = functools.partial(print, foo="x")
+```
+
+```{python}
+# another way to deal with functions we're calling with the same args repeatedly
+def request_page(url, verify, cache=True, send_cookies=False, https_only=True):
+    pass
+
+secure_request = functools.partial(request_page, verify=True, https_only=True)
+```
+
+```{python}
+#| tags: []
+secure_request("", verify=False)
+```
+

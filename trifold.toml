@@ -1,0 +1,8 @@
+provider = "bunny"
+remote_path = "dir-python"
+local_path = "_book"
+ignore = []
+remote_ignore = []
+
+[bunny]
+storage_zone = "jpt-notes"

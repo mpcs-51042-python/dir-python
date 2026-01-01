@@ -1,0 +1,87 @@
+# Running Python
+
+One of the defining characteristics of Python is that it is an **interpreted** language.
+If you've used a language like Java or C you're used to having to compile your code.
+Python is instead typically translated to an intermediate representation (bytecode) and immediately executed without a separate compilation step.
+
+To do this, we need a Python interpreter, a program called `python` (sometimes `python3`).
+
+There are a lot of ways to install Python, but for this class we'll use a tool called `uv` to manage Python and various dependencies.
+
+## Installing uv
+
+
+1. Go to this page, and follow the instructions for your environment: [installing uv](https://docs.astral.sh/uv/getting-started/installation/).
+2. Once uv is installed, type `uv python install 3.13` in your terminal.
+3. After Python is installed, verify the version with `uv run python -V`.
+   You should see a version that starts with 3.13.
+
+## The Python REPL
+
+One of the benefits of an interpreted language is that it is possible to run it one line at a time, in an interactive session.
+
+`uv run python`
+
+This feature of most interpreted languages is called a REPL (pronounced rep-el).
+
+REPL stands for:
+
+- Read - takes user input, typically one line at a time
+- Evaluate - evaluate user input, running the code in the current context
+- Print - print the output of the evaluation automatically (without the need for a `print()`)
+- Loop - repeat, until the user quits
+
+This is incredibly useful, many Python programmers keep a REPL open at all times, to try out ideas / test things / look up documentation.
+
+## Exercise: python-demos directory
+
+Let's set up a small local Python project using `uv` so that we can try a different REPL and run some code together.
+
+1. Open a terminal and navigate (using `cd`) to a location where you'd like to create our demo repository.
+2. Make a new directory (`mkdir python-demos`) and then enter it (`cd python-demos`).
+3. Initialize the directory as a `uv` project with `uv init`.
+
+  This will create a `pyproject.toml` and some other files that aren't needed for our purposes.
+
+  `pyproject.toml` exists at the root of a Python project and configures what other packages are needed.
+
+4. Let's install a package with `uv`, run `uv add ipython`
+
+  This will update your `pyproject.toml` and `uv.lock` files and install the package for use from within this directory.
+
+5. To use this new package you can type `uv run ipython` from within the `python-demos` directory, and you will see `ipython`.
+
+We'll talk more about package management and what this tool is doing later in the course.
+
+## `ipython` vs `python`
+
+`ipython` is an enhanced REPL for Python. It is using the same version of Python you already installed, but providing a different **interface**.
+
+It provides command history, syntax highlighting, and a handful of other useful features that make it many people's preferred REPL.
+It is up to you which you prefer, both provide access to the same core language.
+
+You will often see interactive Python prompts shown as:
+
+```
+>>> x = 4 * 3
+>>> print(x)
+12  
+```
+
+The lines that begin with `>>>` are the Python prompt, and lines without `>>>` indicating output.
+
+In `ipython` input/output lines are marked with `In[0]` and `Out[0]` prefixes, but when showing interactive output I will stick to convention and use `>>>`.
+
+## Tip: Don't use pip (or conda)
+
+You will see instructions using tools other than `uv`, but it is best to stick to a single tool.
+
+When you are looking at Python libraries, which we'll discuss later, you will often see instructions which state you should run `pip install foo`.
+
+**When you see `pip install foo` you should use `uv add foo` instead.**
+
+`conda install` instructions can usually be translated to `uv add` as well.
+
+These tools are older than `uv` and can easily leave your system in a broken state, where `uv` restricts installs to the directory you are working in.
+
+

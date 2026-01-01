@@ -1,0 +1,284 @@
+---
+filters:
+   - include-code-files
+# this file is a map-python-data borrow
+---
+# Python Packages
+
+---
+
+**Goals**
+
+- Review Python's `import` statement and how it relates to packages & libraries.
+- Introduce the structure of a standard Python application.
+
+---
+
+## Terminology
+
+Before we get started, it is probably helpful to review some terminology:
+
+Python **modules** are single `.py` files.
+Modules are a useful way to group related code, you may keep all code related to the database in a `db.py` file and everything related to the user interface in a `ui.py` file.
+
+Python **packages** are one or more .py files, typically in a directory.
+You will sometimes here these referred to as **libraries** when they are meant to be used by other developers.
+Some packages you've already seen would be built-in ones like `math` or `pathlib`, or third-party packages like `pandas` and `pytest`.
+
+Finally, Python **applications** are packages that are meant to be run.  A package may be useful as a library as well as an application.
+
+For example, Python's built in `http` library allows one to work with the HTTP protocol in their own code, but it also contains an application that will let you
+start an HTTP server:
+
+```shell
+$ python3 -m http.server
+```
+
+Will start a local web server making the contents of the current directory available at `http://localhost:8000`.
+
+## How do packages work?
+
+A Python package is typically a directory containing one or more .py files.
+
+An example project layout might look like this:
+
+```
+baking-pkg
+├── baking
+│   ├── __init__.py
+│   ├── cli.py
+│   ├── ingredients.py
+│   ├── sizes.py
+│   ├── units.py
+│   └── utils.py
+├── LICENSE
+├── README.md
+└── tests
+    ├── test_baking.py
+    ├── test_units.py
+    └── test_utils.py
+```
+
+The package is the directory `baking`.
+The inclusion of an (often empty) `__init__.py` marks the directory as a package.
+
+This hypothetical library would be imported via `import baking`.
+Or there could be nested imports such as `from baking.units import Liter`.
+(Remember: the slashes in paths become dots when we're using Python paths.)
+
+## Imports and sys.path
+
+When you type `import baking`, Python will not immediately find the package.
+
+Python has what we often refer to as a **search path**.
+When you import something, Python searches a list of directories for a package or module with that name.
+
+In Python's case the special variable `sys.path` is a list of strings that make up the search path.
+
+Executing the code: 
+```python
+import sys
+
+for p in sys.path:
+    print(p)
+```
+
+Might output something like:
+
+```
+/opt/python@3.13/Python/Versions/3.13/lib/python313.zip
+/opt/python@3.13/Python/Versions/3.13/lib/python3.13
+/opt/python@3.13/Python/Versions/3.13/lib/python3.13/lib-dynload
+/opt/python3.13/site-packages
+```
+
+On your system it will vary, but this shows the list of directories that Python will search when you type `import baking`.
+
+If it finds a `baking/__init__.py` or `baking.py` it will execute it and stop the search.
+If it checks them all without success, it raises an `ImportError`.
+
+
+## Imports & Relative Imports
+
+Now's a good time to review the different ways you can import modules and packages.
+
+`import module_name` 
+
+Imports the module and makes it available in the current namespace.  You can access the module's functions by prefixing them with the module name.  For example, for the module `math` with a function called `sin`, you can access it by calling `math.sin()`.
+
+`from module_name import module_attr`
+
+Imports a specific attribute from a module and makes it available in the current namespace.  For example, `from math import sin` will import the `sin` function from the `math` module and make it available in the current namespace.  You can then call it directly by calling `sin()`.
+
+`import module_name as alias` or `from module_name import module_attr as alias`
+
+Imports a module or attribute and gives it an alias.  For example, `import pandas as pd` will import the `pandas` module and make it available as `pd`.  You can then access the `DataFrame` class as `pd.DataFrame`. This is commonly used in data science libraries (`import numpy as np`, `import pandas as pd`, etc) but overuse can make code harder to read. It's best to use aliases sparingly.
+
+`from module import *`
+
+Makes full contents of module available in the current namespace.
+
+### Why we don't use `import *` in our programs.
+
+Most style guides for large projects ban `import *`. Consider it banned in this course as well.
+
+It breaks a very nice feature of Python that you may take for granted if you've never used another language.
+Typically, if you see a symbol like `BASE_URL`  or `download` used in a file you are guaranteed it is either declared in that file, or you can 
+look at the import statements and discover where it came from.
+
+`import *` breaks this rule, making it difficult to track down where a symbol came from, especially if there is more than one star import.
+
+This also can lead to bugs:
+
+```python
+from math import *
+from travel import *
+
+...
+
+dist(chicago, philadelphia)
+```
+
+Does this use `math.dist`'s euclidean distance or a function named `dist` defined within `travel`?
+
+The answer would vary based on changes to the other files or re-ordering the imports.
+That's a confusing bug just waiting to happen.
+
+:::{.callout-note}
+### Can we ever use `import *`?
+
+It is OK to use `import *` in one-off scripts that nobody else will maintain, or more commonly, in the REPL.
+
+Since these are short-lived invocations there is minimal chance of confusion, and you aren't creating a maintenance nightmare for anybody.
+:::
+
+### Relative Imports
+
+When working with packages, we have the option to also use **relative imports**.
+
+These imports allow you to refer to other files from the same package without specifying the full path.
+
+Let's imagine a larger project with a few sub-packages:
+
+```
+board_game
+├── __init__.py
+├── ui
+│   ├── __init__.py
+│   ├── gui.py
+│   └── images.py
+├── network
+│   ├── __init__.py
+│   ├── high_score.py
+│   └── matchmaking.py
+└── logic
+    ├── __init__.py
+    ├── rules.py
+    └── scoring.py
+```
+
+With traditional **absolute imports**, code within `board_game/ui/gui.py` would need to import
+other packages by their full path:
+
+```python
+# within board_game/ui/gui.py
+from board_game.ui.images import Piece
+from board_game.logic.scoring import check_victory
+```
+
+Relative imports offer an alternative that is less repetitious:
+
+```python
+# within board_game/ui/gui.py
+from .images import Piece
+from ..logic.scoring import check_victory
+```
+
+In this example `.images` refers to the file `images.py` which is in the same directory as `gui.py`, which is why the import starts with a `.`.
+
+Then `..logic.scoring` traverses up a directory (from `ui/` to `logic/`) and then imports the `scoring.py` file.
+
+## Creating application entrypoints
+
+When a package is imported, the `.py` file is executed, so if a file contained:
+
+```python
+# tlprint.py
+print("debug statment inside baking2")
+
+def some_func(...):
+    ...
+```
+
+Whether you executed `import tlprint` or `from tlprint import some_func`, you would see the output of the `print` function since the entire file needs to be executed to complete the import.
+
+If you have code that you only want to be run when the `.py` file is executed as a program, you can put it in a special block:
+
+```python
+# main_demo.py
+def some_func(...):
+    ...
+
+if __name__ == "__main__":
+    print("run as a program")
+```
+
+The statement `if __name__ == "__main__"` checks a special built-in variable named `__name__` that contains the name of the imported module.
+
+If the module is imported the normal way, this condition will be false, but if the program is executed from the command line via either:
+
+```shell
+$ python3 main_demo.py
+```
+or
+```shell
+$ python3 -m main_demo
+```
+
+The special variable `__name__` will be set to `__main__`, indicating that it is being run as a program, not imported as a library.
+
+### Command Line Arguments
+
+Whichever way you run a Python module, you can pass command line arguments to it.
+
+
+These arguments wind up in a special list called `sys.argv`. 
+The first element `sys.argv[0]` is the name of the module.  
+The second element is the first command line argument, and so on.
+
+If you take the file `argdemo.py`:
+
+
+```{.python include="argdemo.py"}
+```
+
+Executing it lets you see how `argv` works in practice:
+
+```shell
+$ python3 argdemo.py -k filename.txt 
+program name: argdemo.py
+argv[1]: -k
+argv[2]: filename.txt
+```
+
+Your program could then use the contents of `sys.argv` however you wanted.
+
+## Further Exploration
+
+### Packages & Modules
+
+* [Official Python Tutorial on Modules & Packages](https://docs.python.org/3/tutorial/modules.html)
+* [Python Language Reference: The import system](https://docs.python.org/3/reference/import.html).
+
+### Argument Parsing
+
+In practice, parsing `sys.argv` yourself is limiting.
+
+If you'd like to write programs that take many options like `ls`, `cd`, and `git` you will benefit from using a package to manage the parameters.
+
+Some common libraries include:
+
+* [`argparse`](https://docs.python.org/3/library/argparse.html) - Built in to Python, but a bit verbose for larger applications.
+* [`click`](https://click.palletsprojects.com/) - Popular and easy to get started with.
+* [`typer`](https://typer.tiangolo.com/) - Built on top of `click` and uses type annotations to generate help text.
+* [`docopt`](http://docopt.org/) - A novel approach using a docstring to define arguments.

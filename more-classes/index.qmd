@@ -1,0 +1,583 @@
+# Class Methods & Properties
+
+## Encapsulation
+
+We've discussed how a fundamental principle of class-based OOP is that a class should be usable *without needing to understand, or even know how data is stored within*.
+
+We call this **encapsulation**, the bundling of data with all behaviors that can act on or modify that data.
+This separation of concerns is what allows you to use a Python dictionary without worrying about hashtable semantics, or a list without thinking about memory allocation.
+
+Another way to put this is that a class should be responsible for any modifications to its internal state.
+
+When you are working on a large team, proper use of encapsulation/OOP provides one mechanism to ensure that your changes won't break other people's code.
+Encapsulation allows the implementation of an object's interface to be changed without impacting the users of that object."
+
+To understand this better, let's look at why it may be a bad idea to allow users to change attributes:
+
+```python
+car2.mileage -= 100     # rewind the odometer
+car2.hybrid = "no"      # should have been False & probably immutable
+```
+
+Imagine that in our data `year` is sometimes an integer and sometimes a string, but we always want to be able to calculate a vehicles age, we could decide to force the type in the constructor:
+
+```python
+class Car:
+    def __init__(self, make, model, year):
+        self.make = make
+        self.model = model
+        self.year = int(year)   # coerce to int year
+        self.mileage = 0
+        self.hybrid = False
+        
+    def drive(self, miles):
+        if miles < 0:
+            raise ValueError('miles must be positive')
+        self.mileage += miles
+```
+
+We also protect against trying to roll back the odometer by driving in reverse
+by ensuring that `drive` only accepts positive values.
+
+This may not be sufficient however, a user might still see the `year` attribute
+and assume they can set it themselves, outside the constructor, or modify `mileage` directly.
+
+To help *enforce* encapsulation, languages often provide features like private attributes, getters & setters, and properties.  We'll take a look at how Python approaches these.
+
+## There is no "private" in Python
+
+Some languages use access specifiers like "private", "public", "protected" to disallow modifications from outside of the class. With these keywords in Java for instance, modification of `private` attributes is restricted to methods of the class.
+
+Python does not have this kind of variable, and instead relies on convention, we signal to other programmers what we expect them to do.
+If they choose to break those rules, they can expect to deal with unintended consequences or interface breakage.
+
+By *convention* a name with a single underscore at the front is meant to be "internal" to the class, and should not be modified except from methods of that class. (`self._mileage`, `self._year`)
+
+Going a step further, a name with a double underscore at the front is actually modified internally by Python to avoid people assigning to it accidentally.
+
+```{python}
+class Car: 
+    def __init__(self, make, model, year):
+        self._make = make 
+        self._model = model 
+        self._year = year
+        self.__mileage = 0
+                
+    def drive(self, miles):
+        if miles > 0:
+            self.__mileage += miles
+        else:
+            ...
+            
+    def print_report(self):
+        print(f"{self._year} {self._make} {self._model} with {self.__mileage} miles")
+    
+car1 = Car("Honda", "Civic", 2019)
+car2 = Car("Chevy", "Volt", 2022)
+
+car2.drive(500)
+car2.print_report()
+```
+
+```{python}
+car2._year
+```
+
+```{python}
+dir(car2)
+```
+
+```{python}
+# soft protection, can still access but "at your own risk"
+car2._make = "???"
+print(car2._make) 
+```
+
+## Getters / Setters
+
+To avoid issues with people depending on internal attributes, it is common in some languages (and tempting in Python) to force users to make all modifications through get & set methods, sometimes called getters and setters:
+
+```{python}
+class Person:
+    def __init__(self, name, age):
+        self.__name = name  #  Assume it has getter/setters not shown here
+        self.set_age(age)
+
+    def get_age(self):
+        return self.__age
+
+    def set_age(self, age):
+        # can protect against invalid data
+        if age < 0:
+            raise ValueError("Person can't have a negative age!")
+        self.__age = age
+```
+
+```{python}
+p = Person("C. Montgomery Burns", 100)
+```
+
+```{python}
+p.get_age()
+```
+
+```{python}
+p.set_age(101)
+```
+
+```{python}
+p.get_age()
+```
+
+```{python}
+try:
+    p.set_age(-1)
+except Exception as e:
+    print(repr(e))
+```
+
+This is a fine solution when there is work for the getters & setters to do, but
+often there isn't-- and they'll (at least initially) be very repetitive.
+
+We still must provide them from the start, because if we didn't we couldn't make changes to the class (for example, storing birthdate instead of age) since there would be code in our program that directly accessed `Person.age`.
+
+However, in Python, **we tend not to use getters and setters**, instead we allow attributes that are meant to be changed to be set directly.
+
+## Properties
+
+This difference is possible because of how Python allows us to define **properties**.
+
+Say we want the advantages of encapsulation (being able to avoid improper use, hiding our internal representation, etc.) but without the need to start with a bunch of getter/setter functions that aren't (yet) needed.
+
+There is a built in function `property()` that creates and returns a property object.
+
+`property(fget=None, fset=None, fdel=None, doc=None)`
+
+- `fget` is a function to get value of the attribute
+- `fset` is a function to set value of the attribute
+- `fdel` is a function to delete the attribute
+- `doc` is a docstring for the attribute
+
+```{python}
+class Person:
+    
+    def __init__(self, name, age):
+        self.name = name  #  Assume it has getter/setters 
+        self.age = age
+
+    def _get_age(self):
+        print("inside get age")
+        return self.__age
+
+    def _set_age(self, age):
+        if age < 0:
+            raise ValueError("Person can't have a negative age!")
+        self.__age = age
+        
+    def __repr__(self):
+        return f"Person({self.__name!r}, {self.__age})"
+        
+    age = property(_get_age, _set_age, doc="age of the person")
+```
+
+```{python}
+p = Person("Wayne", 30)
+p.age # will call _get_age
+
+try:
+    p.age = -1 # will call _set_age
+except Exception as e:
+    print(repr(e))
+
+print(p.age)
+```
+
+### @property
+
+We can also use `property` as a decorator.
+
+The usage looks a bit strange since we need to decorate multiple functions:
+
+- Place the `@property` directly above the function header of the getter function.
+- Place the code `@name_of_property.setter` above the function header of the setter function. You need to replace the name_of_property with the actual name of the property.
+- The function names for both the setter/getter need to match.
+
+```{python}
+class Person:
+    def __init__(self, name, age):
+        self.__name = name  #  Assume it has getter/setters 
+        # invokes setter
+        self.age = age #self.set_age(age)
+        self.birth_date = ...
+
+    @property
+    def age(self):
+        """ returns the age property """
+        print('getter called')
+        return self.__age
+    # same as 
+    #age = property(age)
+    
+    @age.setter
+    def age(self, age):
+        print('setter called')
+        if age < 0:
+            raise ValueError("Person can't have a negative age!")
+        self.__age = age
+        
+    def __repr__(self):
+        return f"Person({self.__name!r}, {self.__age})"
+```
+
+The existence of properties allows us to start all attributes out as public ones, and convert to properties as needed.
+The user of the class does not need to know that a change was made, preserving encapsulation without forcing us into calling setter/getters.
+
+### Read-only/Calculated Properties
+
+```{python}
+class Rectangle: 
+    
+    def __init__(self,width,height):
+        self.width = width 
+        self.height = height
+        # this would only happen once and not update when width or height are changed
+        # self.area = width*height
+    
+    # read-only calculated property (no setter)
+    @property 
+    def area(self):
+        return self.width * self.height 
+```
+
+```{python}
+r = Rectangle(3, 9)
+```
+
+```{python}
+print(r.area)
+```
+
+```{python}
+# area is dynamically calculated each call
+r.width = 6
+print(r.area)
+```
+
+```{python}
+# but can't be set
+try:
+    r.area = 4
+except Exception as e:
+    print("ERROR", e)
+```
+
+## Class Attributes
+
+Sometimes we want to share data between all instances of a given class.
+
+All cars have 4 wheels, so we could define a shared variable accessible to all instances of the `Car` class.
+
+To do this, we create them within the `class` body, usually right above the `__init__`.
+
+```{python}
+import datetime
+
+class Car:
+    # class attribute
+    wheels = 4
+    registrations = []
+
+    def __init__(self, make, model, year):
+        self.make = make 
+        self.model = model 
+        self.year = year
+        # add this car to the global registry of all cars
+        Car.registrations.append(self)
+
+        # setting this attribute would shadow Car.wheels
+        # both would exist, but we'd need to be explicit
+        # about which we intended to use (avoid this!)
+        # self.wheels = 0
+    
+    def compute_age(self):
+        return datetime.date.today().year - self.year 
+    
+    
+car1 = Car("Honda", "Accord", 2019)
+car2 = Car("Toyota", "RAV4", 2006)
+```
+
+```{python}
+# class attribute can be accessed on instances, or the class itself
+print(Car.wheels)
+print(car1.wheels)
+print(car2.wheels)
+```
+
+```{python}
+# these are all the same variable
+Car.wheels is car1.wheels
+```
+
+```{python}
+# this means changes to the class attribute affect all classes
+
+Car.wheels = 3
+print(car1.wheels)
+print(car2.wheels)
+```
+
+```{python}
+# Careful: assigning to an instance attribute makes a new attribute
+
+# creates a new instance variable! not what we wanted!
+car2.wheels = 2
+print(car2.wheels is car1.wheels)
+print(car1.wheels)
+print(Car.wheels)
+```
+
+## Class Methods
+
+It can also be useful to provide methods that are accessible to all instances of a class.
+
+Class methods are similar to instance methods with a few distinctions:
+
+1. They can not access instance methods or attributes.
+2. The first argument to the method is not `self`, but instead `cls` by convention.  `cls` is the class object itself (e.g. `Car`)
+3. Class methods are declared with the `@classmethod` decorator.
+
+```{python}
+#| tags: []
+from datetime import date
+
+class Car: 
+    
+    # wheels class attribute 
+    wheels = 4
+    # tire pressure class attribute  
+    psi = 35 
+    
+    def __init__(self, make, model, year):
+        self.make = make 
+        self.model = model 
+        self.year = year
+    
+    def compute_age(self):
+        print(self)
+        current_year = int(date.today().year)
+        return current_year - self.year 
+    
+    @classmethod 
+    def tire_description(cls):
+        print(cls)
+        return f'Car has {cls.wheels} wheels with a tire pressure of {Car.psi}' 
+    
+car1 = Car("Honda", "Accord", 2019)
+car2 = Car("Toyota", "RAV4", 2006)
+```
+
+```{python}
+#| tags: []
+print(Car.tire_description())
+#print(car1.tire_description())
+print(car1.compute_age())
+```
+
+Notice that we can use `Car.psi` or `cls.wheels` to access class attributes. `cls` is generally preferred, both to avoid repetition and for reasons we'll see when we get to inheritance.
+
+Finally, note that we can access class methods and instances from within instance methods. (but not vice-versa!)
+
+```{python}
+from datetime import date
+class Car: 
+    
+    # wheels class attribute 
+    wheels = 4
+    
+    # tire pressure amount 
+    psi = 35 
+    
+    def __init__(self, make, model, year):
+        self.make = make 
+        self.model = model 
+        self.year = year
+    
+    def compute_age(self):
+        current_year = int(date.today().year)
+        return current_year - self.year 
+    
+    @classmethod 
+    def tire_description(cls):
+        return f'Car has {cls.wheels} wheels, each with a tire pressure of {Car.psi}' 
+
+    def __repr__(self): 
+        instance_str = f'Car(make={self.make}, model={self.model}, year={self.year}, '
+        instance_str += f'wheels={Car.wheels}, {self.tire_description()})'
+        return instance_str
+```
+
+```{python}
+car1 = Car("Honda", "Civic", 2019)
+print(car1)
+```
+
+### Alternate Constructors
+
+A common use of class methods is to define alternate ways to initialize an isntance.  In Python there can only be one constructor (`__init__`), whereas some other languages allow multiple.
+
+Perhaps we have Car data coming from a file, meaning we'd have strings like:
+
+```{python}
+#| tags: []
+car1str = "Pontiac|Grand Am|1997|4892"
+car2str = "Ford|Mustang|1970|800"
+car3str = "Hyundai|Sonata|2007|0"
+
+
+def make_car_from_string(s: str) -> Car:
+    ...
+```
+
+```{python}
+#| tags: []
+from datetime import date
+
+class Car: 
+    wheels = 4
+    psi = 35
+    
+    def __init__(self, make, model, year):
+        self.make = make 
+        self.model = model 
+        self.year = year
+        self.mileage = 0
+        
+    @classmethod
+    def from_string(cls, string):
+        make, model, year, mileage = string.split("|")
+        # invoke Car's constructor
+        new_instance = cls(make, model, year)
+        new_instance.mileage = mileage
+        return new_instance
+    
+    def compute_age(self):
+        current_year = int(date.today().year)
+        return current_year - self.year 
+    
+    @classmethod 
+    def tire_description(cls):
+        return f'Car has {cls.wheels} wheels, each with a tire pressure of {Car.psi}' 
+
+    def __repr__(self): 
+        instance_str = f'Car(make={self.make}, model={self.model}, year={self.year}, '
+        instance_str += f'wheels={Car.wheels})'
+        return instance_str
+```
+
+```{python}
+#| tags: []
+car1 = Car.from_string(car1str)
+car2 = Car.from_string(car2str)
+car3 = Car.from_string(car3str)
+```
+
+```{python}
+#| tags: []
+print(car1)
+print(car2)
+print(car3)
+```
+
+This is a common pattern, seen throughout Python:
+
+ - ``int.from_bytes()``
+ - ``float.fromhex()`` 
+ - ``datetime.date.fromtimestamp()``
+ - ``itertools.chain.from_iterable()``
+
+```python
+x = list(map(...))
+y = dict(...)
+```
+
+```{python}
+import datetime
+datetime.date(2024, 11, 11)
+```
+
+```{python}
+datetime.date.fromtimestamp(1234567890)
+```
+
+```{python}
+import itertools
+for x in itertools.chain.from_iterable([(1,2,3), (4,5,6)]):
+    print(x)
+#for x in (1,2,3):
+#    print(x)
+#for x in (4,5,6):
+#    print(x)
+```
+
+### staticmethod
+
+Sometimes it makes sense to just attach a method to a class for the purpose of namespacing.
+
+
+```{python}
+def which_is_newer(a, b):
+    if a.year > b.year:
+        return a
+    else:
+        return b
+
+which_is_newer(car1, car2)
+```
+
+```{python}
+# it might make sense to attach this to the class, 
+# but neither a classmethod nor an instance method
+
+from datetime import date
+class Car: 
+    wheels = 4
+    psi = 35
+    
+    # does not take self or cls
+    @staticmethod
+    def which_is_newer(a, b):
+        if a.year > b.year:
+            return a
+        else:
+            return b
+        
+    @staticmethod
+    def something():
+        return []
+    
+
+    
+    def __init__(self, make, model, year):
+        self.make = make 
+        self.model = model 
+        self.year = year
+        
+    @classmethod
+    def from_string(cls, string):
+        make, model, year = string.split("|")
+        # invoke Car's constructor
+        return cls(make, model, year)
+
+    def __repr__(self): 
+        instance_str = f'Car(make={self.make}, model={self.model}, year={self.year}, '
+        instance_str += f'wheels={Car.wheels})'
+        return instance_str
+```
+
+```{python}
+# now would be called this way
+Car.which_is_newer(car1, car2)
+```
+
+There is nothing special about a `staticmethod`, it can always be replaced by a method outside of the class. It is a matter of preference.

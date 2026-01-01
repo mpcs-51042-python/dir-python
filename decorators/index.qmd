@@ -1,0 +1,376 @@
+---
+title: Decorators
+jupyter: python3
+---
+
+## Decorators
+
+A common pattern in functional programs, are functions that are built to "wrap" other functions.
+
+This pattern allows one to attach behavior before or after a function call, making it possible to:
+
+- log function calls
+- validate or modify arguments (before)
+- validate or modify return value (after)
+- check performance or other characteristics of the function (e.g. time elapsed)
+- replace the inner function wholesale, for any purpose
+
+```{python}
+# a simple example
+def print_before_and_after(func):
+    def newfunc(*args, **kwargs):
+        print("BEFORE", func)
+        func(*args, **kwargs)
+        print("AFTER", func)
+    return newfunc
+```
+
+This function `print_before_and_after` is called a decorator, it takes a function, and returns a new function.
+
+Typically this new function will call the original function, but that is not required!
+
+
+```{python}
+def inner(a, b, c):
+    print("inner function", a, b, c)
+```
+
+```{python}
+wrapped_inner = print_before_and_after(inner)
+
+wrapped_inner(1, 2, 3)
+```
+
+```{python}
+# often we want to replace the function altogether
+inner = print_before_and_after(inner)
+inner(1, 2, 3)
+```
+
+## Decorator Syntax
+
+Wanting to replace a function with its decorated form is so common, we have a special syntax:
+
+```{python}
+@print_before_and_after
+def add_nums(a, b, c):
+    print(f"{a} + {b} + {c} =", a + b + c)
+
+add_nums(1, 2, 3)
+# same as add_nums = print_before_and_after(add_nums)
+```
+
+We can apply multiple decorators, here we'll apply the same one twice:
+
+```{python}
+@print_before_and_after
+@print_before_and_after
+def mult_nums(a, b, c):
+    print(f"{a} * {b} * {c} =", a * b * c)
+
+mult_nums(1, 2, 3)
+# same as mult_nums = print_before_and_after(print_before_and_after(add_nums))
+```
+
+### Creating a Cache
+
+We saw that we can use enclosing scope to create a cache, now we can do that in a generic way that will work for any function:
+
+```{python}
+def cache(func):
+    inner_cache = {}
+    
+    def newfunc(*args):
+        if args not in inner_cache:
+            inner_cache[args] = func(*args)
+        return inner_cache[args]
+    
+    return newfunc
+```
+
+```{python}
+@cache
+def expensive_calculation(a, b, *, c=0):
+    print(f"doing expensive calculation on {a} {b}...")
+    return a ** b
+
+@cache
+def cheap_calculation(a, b):
+    print(f"doing cheap calculation on {a} {b}...")
+    return a + b
+```
+
+```{python}
+expensive_calculation(4, 10)
+```
+
+```{python}
+expensive_calculation(4, 10)
+```
+
+```{python}
+# independent cache
+cheap_calculation(4, 10)
+```
+
+```{python}
+expensive_calculation(5, 6)
+```
+
+```{python}
+expensive_calculation(5, 6)
+```
+
+### Decorators with Arguments
+
+Python has a built in `functools.lru_cache` function, which gives us a cache of a defined size:
+
+```python
+@lru_cache(100)
+def some_calc(a, b, c):
+    pass
+```
+
+To write a decorator that takes additional arguments, you must write one more function.
+
+We already had:
+
+- decorator function: takes function, returns function
+- inner function: takes *args, **kwargs typically, since outer function isn't known, returns same type as wrapped func
+
+Now we add one more outside that decorator function, a **factory function** that returns a decorator!
+
+```{python}
+def repeat(n):  # factory: takes integer, returns decorator
+    def repeat_decorator(func):                  # decorator: takes function, returns function
+        def newfunc(*args, **kwargs):            # inner function: takes ?, returns ?
+            for i in range(n):
+                func(*args, **kwargs)
+        return newfunc
+    return repeat_decorator
+
+@repeat(10)
+def print_backwards(s):
+    print(s[::-1])
+
+print_backwards("backwards")
+```
+
+```{python}
+# we can see the layers if we call one step at a time:
+# first, obtain the decorator from the factory
+repeat_10 = repeat(10) 
+print(repeat_10)
+# apply the decorator to the wrapped function
+print_backwards = repeat_10(print_backwards)
+```
+
+## Function Properties
+
+Let's look at `functools.partial` again:
+
+<https://docs.python.org/3/library/functools.html#functools.partial>
+
+```{python}
+import functools
+print_hello_names = functools.partial(print, "Hello", sep=", ")
+```
+
+```{python}
+print_hello_names("Scott", "Paul", "Lauren")
+# "hello" already bound, as is sep, so this is the same as:
+# print("Hello", "Scott", "Paul", "Lauren", sep=", ")
+```
+
+Partial stores attributes on the function, **functions are mutable!**
+
+```{python}
+# bound args
+print_hello_names.args
+```
+
+```{python}
+# bound keywords
+print_hello_names.keywords
+```
+
+```{python}
+# original func
+print_hello_names.func
+```
+
+```{python}
+# since functions are objects, we can attach arbitrary values to them
+def wrapper(func):
+    def newfunc(*args, **kwargs):
+        return func(*args, **kwargs)
+    # we can do whatever we like after defining newfunc, but before returning it
+    newfunc.xyz = "hello"*2
+    return newfunc
+```
+
+```{python}
+# property is assigned to all wrapped functions
+@wrapper
+def our_function():
+    print("inside our function")
+
+our_function.xyz
+```
+
+### Writing our own `partial`
+
+```{python}
+def our_partial(func, /, *args, **keywords):
+    def newfunc(*fargs, **fkeywords):
+        newkeywords = {**keywords, **fkeywords}
+        return func(*args, *fargs, **newkeywords)
+    # assign these properties from within the closure
+    newfunc.func = func
+    newfunc.args = args
+    newfunc.keywords = keywords
+    return newfunc
+```
+
+```{python}
+print_hello_names2 = our_partial(print, "Hello", sep=", ")
+print_hello_names2("Scott", "Paul", "Lauren", end="!")
+```
+
+```{python}
+#print_hello_names2 = our_partial(print, "Hello", sep=", ")
+print_hello_names2("Scott", "Paul", "Lauren", end="!", sep="?")
+```
+
+```{python}
+print_hello_names2.args
+```
+
+```{python}
+print_hello_names2.keywords
+```
+
+```{python}
+print_hello_names2.func
+```
+
+
+## More Decorator Examples
+
+### Not Calling the Wrapped Function
+
+```{python}
+def disable(f):
+    def newfunc(*args, **kwargs):
+        print("would have called ", f.__name__)
+    return newfunc
+
+@disable
+def expensive_func(a, b):
+    print("expensive!")
+
+expensive_func(1, 2)
+```
+
+
+### Modifying Arguments within newfunc
+
+```{python}
+def reverse_args(func):
+    def newfunc(*args):
+        # within newfunc we are able to write whatever we'd like
+        # we could decide that we want to reverse the arguments
+        reversed_args = reversed(args)
+        return func(*reversed_args)
+    return newfunc
+
+
+@reverse_args
+def print_args(*args):
+    for arg in args:
+        print(arg)
+```
+
+```{python}
+print_args(1, 2, 3)
+```
+
+```{python}
+@reverse_args
+def divide(a, b):
+    return a / b
+
+divide(10, 2)
+```
+
+### Example: Authorization
+
+```{python}
+# perhaps we want a function that checks if a user can perform an action
+def auth_required(func):
+    
+    # list of allowed users. in practice, we'd look this up in a database
+    allowed_users = ("lauren", "mitch")
+    
+    def newfunc(*args, **kwargs):
+        # here, we're actually using an argument within newfunc
+        # by checking if it is in the kwargs dictionary
+        if kwargs.get("auth_user") in allowed_users:
+            func(*args, **kwargs)
+        else:
+            print("ACCESS DENIED")
+    return newfunc
+
+# these functions must also accept auth_user so that the above call to func(*args, **kwargs)
+# doesn't send an invalid parameter through
+@auth_required
+def withdraw_funds(account, amount, auth_user):
+    print(f"withdrew {amount} funds from account={account}")
+
+@auth_required
+def delete_account(account, auth_user):
+    print("deleted", account)
+```
+
+```{python}
+withdraw_funds("jim", 100, auth_user="lauren")
+```
+
+```{python}
+delete_account("kevin", auth_user="jim")
+```
+
+### Modifying Keyword Parameters
+
+```{python}
+# if we didn't want auth_user to be passed through, we'd make a small modification to newfunc
+
+def auth_required(func):    
+    allowed_users = ("lauren", "mitch")
+    
+    def newfunc(*args, auth_user, **kwargs):
+        # newfunc now requires auth_user, and passes through all *other* parameters
+        if auth_user in allowed_users:
+            func(*args, **kwargs)
+        else:
+            print("ACCESS DENIED")
+    return newfunc
+
+# auth_user is no longer seen in the definition of these functions 
+# but it can be passed in since the newfunc returned from auth_required accepts it
+@auth_required
+def withdraw_funds(account, amount):
+    print(f"withdrew {amount} funds from account={account}")
+
+@auth_required
+def delete_account(account):
+    print("deleted", account)
+```
+
+```{python}
+withdraw_funds("jim", 100, auth_user="lauren")
+```
+
+```{python}
+delete_account("kevin", auth_user="jim")
+```

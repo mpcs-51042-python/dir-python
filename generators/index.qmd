@@ -1,0 +1,255 @@
+---
+title: Generators
+jupyter: python3
+---
+
+## `range` revisited
+
+What does `range` return?
+
+```python
+# Tip: you can separate digits with _ for readability (Python ignores the _)
+for i in range(1_000_000_000):
+    print(i)
+    if i == 3:
+        break
+```
+
+We can see that it is *iterable*, perhaps a list or tuple?
+
+How much memory does a list of 1 billion integers take?
+
+(4 bytes/int) * 1B = 4GB of RAM?!
+
+Keep in mind, we're only using one of these integers at a time!
+
+This wasteful behavior was indeed the case in Python 2, `range` had to allocate all of the needed memory at once.
+
+*Fortunately in Python 3, a range is lazily-evaluated, but how?*
+
+```{python}
+rg = range(1000)
+print(rg, type(rg))
+```
+
+## Generators
+
+Generators are a special type of object that is *iterable*, but **not a collection**.
+
+A generator object *yields* a single result at a time, which means we can use far less memory in most cases, especially when we won't use the entire iterable.
+
+Today we'll see two ways to write generators: **generator functions**, and **generator expressions**.
+
+## Generator Expressions
+
+When we introduced *comprehensions* we mentioned that they only made sense to use if you are planning to use the entire iterable.
+
+```{python}
+# this allocates a list of 100 integers
+powers_of_two = [2**x for x in range(100)]
+
+# this is a wasteful way to use a list comprehension, only one value is needed at a time
+for num in powers_of_two:
+    print(num)
+    if num > 1_000_000:
+        break
+```
+
+There is one more expression that uses the comprehension-style syntax, and that is the **generator expression**.
+
+```{python}
+# parenthesis () instead of square brackets [], creates a generator expression
+powers_of_two_gen = (2**x for x in range(100))
+
+# what is this type?
+print(powers_of_two_gen)
+print(type(powers_of_two_gen))
+
+# iteration works as you'd expect
+for num in powers_of_two_gen:
+    print(num)
+    if num > 1_000_000:
+        break
+```
+
+The generator expression creates a **generator** object, which, like `range`, is iterable, but not a collection.
+
+### Iteration Revisited
+
+Iteration in Python is achieved via a *protocol*, one or more special methods that describe how a given type
+can be used in a certain context.
+
+We'll explore these protocols in more detail later in the course.
+
+Iteration depends on two functions: `iter()` and `next()`.
+
+`iter()` takes an *iterable* and returns an *iterator*, a kind of object we usually don't interact with directly.
+
+Any *iterable* can be passed into `next()`, which will return the next value, or raise a `StopIteration` error if the iterable is exhausted.
+
+
+```python
+for i in iterable:
+    print(i)
+
+# can be rewritten as
+iterator = iter(iterable)
+while True:
+    try:
+        i = next(iterator)
+        print(i)
+    except StopIteration:
+        # this break only runs when next runs out
+        break
+
+# we usually don't see the iterator!
+```
+
+While we usually don't see the iterator, a *generator* is both *iterable* and *iterator*, so we can use `next` on them:
+
+```{python}
+power_of_three = (3**n for n in range(5))
+print(next(power_of_three))
+print(next(power_of_three))
+print(next(power_of_three))
+print(next(power_of_three))
+print(next(power_of_three))
+
+# one more call would raise an error!
+try:
+    print(next(power_of_three))
+except StopIteration:
+    print("done!")
+```
+
+## Generator Functions
+
+While generator expressions are one way to create simple generators, they have the same limitations that comprehensions have: they can have a single expression for each input, and use a single conditional.
+
+We can also create generators by writing **generator functions**. These are special functions that return the **generator type**.
+
+Note that this is the same *type* as the generators we've already introduced, just a different way to create them.
+
+A function that contains the `yield` keyword, is automatically a generator function.
+Let's rewrite one of our earlier examples as a function:
+
+```{python}
+def powers_of_2(limit):
+    for n in range(limit):
+        yield 2**n
+```
+
+Calling this function returns a generator:
+
+```{python}
+p2g = powers_of_2(10)
+print(p2g)
+print(type(p2g))
+```
+
+We can iterate over it with a for loop:
+
+```{python}
+for x in p2g:
+    print(x)
+```
+
+All generators can only be consumed once, so an attempt to call `next()` leads to an error:
+
+```{python}
+try:
+    print(next(p2g))
+except Exception as e:
+    print(repr(e))
+```
+
+Generator functions do give us an option that expressions did not, we can create a fresh generator by calling the function again:
+
+```{python}
+g1 = powers_of_2(10)
+g2 = powers_of_2(10)
+
+# g1 and g2 are independent, we can move one forward,
+# and it doesn't affect the other
+
+print(" g1", next(g1))
+print(" g1", next(g1))
+print(" g1", next(g1))
+print(" g2", next(g2))
+print(" g2", next(g2))
+print(" g1", next(g1))
+```
+
+Generator functions can contain multiple `yield`, each `yield` **pauses** execution of the generator.
+The internal state of the function remains intact, unlike **return**.
+
+```{python}
+def simple_generator_func():
+    print("start")
+    yield 1
+    print("still running")
+    yield 2
+    print("one more")
+    yield 3
+```
+
+```{python}
+g = simple_generator_func()
+
+print("got (first)", next(g))
+
+print("--before loop--")
+
+for x in g:
+    print("got", x)
+```
+
+### Infinite Generators
+
+Generators do not need to ever actually exit, let's create an abstraction for our powers-of-n generators:
+
+```{python}
+def powers_of_n(n):
+    i = 0
+    while True:
+        yield n ** i
+        i += 1
+```
+
+```{python}
+pow5 = powers_of_n(5)
+
+print(next(pow5))
+print(next(pow5))
+print(next(pow5))
+print(next(pow5))
+print(next(pow5))
+```
+
+This code works because we're only asking for one more iteration of the loop, each time we call `next` the code in the function
+runs until it hits the next `yield`.
+
+We can also use this in a loop *if we're careful to break!*:
+
+```{python}
+for x in powers_of_n(7):
+    print(x)
+    # it is up to the calling loop to break, without this we run forever!
+    if x > 10000:
+        break 
+```
+
+## Discussion: Benefits of Generators
+
+### Exercise: Write your own `range`
+
+```{python}
+# there is a third optional parameter to range, the *step*
+for x in range(3, 10, 2):
+    print(x)
+```
+
+```python
+def new_range(lower_bound, upper_bound, step=1):
+    pass
+```

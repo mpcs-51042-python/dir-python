@@ -1,0 +1,538 @@
+# Collections
+
+## sequences are collections
+
+When we last talked about types, we introduced **scalars** and **sequences**.
+Sequences are a subset of the **collections**.
+
+Let's review the sequence types:
+
+::: {.callout-note collapse=true}
+###### What three types were sequences?
+
+- str
+- list
+- tuple
+
+:::
+
+::: {.callout-note collapse=true}
+###### What did these have in common?
+
+- ordered
+- can be indexed
+- certain sequence methods
+- can be *iterated* over
+
+:::
+
+All of these are collections because they can contain many values, today we'll see three more collection types.
+These types are *not ordered*.
+
+## `dict`
+
+A collection of key-value pairs.  (aka map/hashmap in other languages)
+
+- Keys must be hashable.  `tuple`, `str`, scalars -- why?
+- Values are references, can be any type.
+- Dynamically resizable
+- Implemented using a hashtable, lookup is constant-time.  **O(1)**
+
+- Iterable? Yes
+- Mutable? Yes
+- Sequence? No. (Why not?)
+
+```{python}
+record1 = {
+    "name": "Anna",
+    2024: 42,
+    2023: 12,
+}
+print(record1)
+```
+
+```{python}
+# declaration
+record1 = {
+    "name": "Anna",
+    "age": 42,
+}
+
+empty = {}
+
+# alternate form
+record2 = dict(age=42, name="Anna")
+# there is also a list("a", "b", "c") form
+
+# less common: can construct from sequence of tuples
+record3 = dict(
+    [
+        ("name", "Anna"),
+        ("age", 42)
+    ]
+)
+
+```
+
+```{python}
+print(record1)
+print(record2)
+# compare as equal if all keys/value pairs are equal
+print(record1 == record2)
+```
+
+```{python}
+# read / write to key the same way you do with lists
+print(record1["name"])
+record1["name"] = "Annabelle"
+```
+
+```{python}
+# sequence method 'in' tests if a key exists (not a value!)
+print("name" in record1)
+print(42 in record1)
+```
+
+```{python}
+# keys, values, items are special iterables
+print(record1.keys())
+print(record1.values())
+print(record1.items())
+```
+
+```{python}
+for k, v in record1.items():
+    print(k, v)
+```
+
+### hashable keys
+
+Dictionary keys must be **hashable**, for now you can think of that as the same as immutable.
+
+Dictionaries use a built in `hash()` function to convert a key to a large integer as part of their internals.
+(We will revisit these internals in the second half of the course.)
+
+```{python}
+print(hash(1))
+print(hash("ABC"))
+```
+
+```python
+hash({}) # TypeError!
+hash([1, 2, 3]) # TypeError!
+```
+
+```{python}
+# tuples are hashable
+d = {}
+d[(1, 2, 3)] = 4
+print(d)
+```
+
+### Mutability
+
+Dictionaries are *mutable*, you can change, expand, and shrink them in place.
+
+This means we aren't copying/creating new dictionaries on every edit.
+
+```{python}
+#| slideshow: {slide_type: fragment}
+order = {"spam": 1, "eggs": 2, "coffee": 1}
+
+order["sausage"] = 1
+print(order)
+```
+
+```{python}
+#| slideshow: {slide_type: fragment}
+del order["eggs"]
+print(order)
+```
+
+```{python}
+#| slideshow: {slide_type: fragment}
+order["bagel"] = 1
+print(order)
+```
+
+```{python}
+#| slideshow: {slide_type: fragment}
+hash("bagel"), hash("Bagel")
+```
+
+```{python}
+#| slideshow: {slide_type: subslide}
+# dictionaries are iterable (keys by default)
+for key in order:
+    print(key)
+```
+
+```{python}
+# can use .items() or .values() to loop over non-keys
+for key, value in order.items():
+    print(f"{key=} {value=}")
+
+print(order.items())
+```
+
+```{python}
+# can use .items() or .values() to loop over non-keys
+for a_tuple in order.items():
+    print(a_tuple[0], a_tuple[1])
+```
+
+### common dictionary methods
+
+| Operation | Meaning |
+|-----------|---------|
+| `d.keys()` | View of all keys. |
+| `d.values()` | View of all values. |
+| `d.items()` | View of key, value tuples. |
+| `d.copy()` | Make a (shallow) copy. |
+| `d.clear()` | Remove all items. |
+| `d.get(key, default=None)` | Same as d[key] except if item isn't present, default will be returned. |
+| `d.pop(key, default=None)` | Fetch item & remove it from dict. |
+| `len(d)` | Number of stored entries. |
+
+See all at <https://docs.python.org/3/library/stdtypes.html#dict>
+
+```{python}
+d = {"eggs": 2, "coffee": 1}
+
+key = "fish"
+# get can return a default if not present
+print("ordered", d.get(key, 0), key)
+```
+
+```{python}
+# pop removes the item
+print(d.pop("coffee"), "coffee served")
+print("order is now", d)
+```
+
+```{python}
+# pop can take a default
+spam_ordered = order.pop("spam", 0)
+print(spam_ordered)
+```
+
+### Dictionary View Objects
+
+`keys(), values() and items()` return special "view objects" that are meant for iteration.
+
+The returned object is a dynamic view, so when the dictionary changes, the view changes.
+
+```{python}
+dishes = {"eggs": 2, "sausage": 1, "bacon": 1, "spam": 500}
+
+# Keys is a view object of the keys from the dishes dictionary
+keys = dishes.keys()
+values = dishes.values()
+items = dishes.items()
+
+print(keys)
+print(values)
+print(items)
+```
+
+```{python}
+# View objects are dynamic and reflect dictionary changes
+
+# Lets delete the 'eggs' entry
+del dishes["eggs"]
+
+# Notice the both the views have removed key and its value
+print(keys)
+print(values)
+print(items)
+```
+
+```{python}
+# Nested Dictionaries Example
+
+menu = {
+    "Breakfast": {"Eggs": 2.19, "Toast": 0.99, "Orange Juice": 1.99},
+    "Lunch": {"BLT": 3.99, "Chicken": 5.99, "Salad": 4.50},
+    "Dinner": {"Cheeseburger": 9.99, "Salad": 7.50, "Special": 8.49},
+}
+
+print(menu["Lunch"])
+
+print(menu["Lunch"]["Salad"])
+```
+
+### Caveats
+
+Mutability comes at a cost, mutable types are less memory efficient and more prone to misuse.
+
+We'll talk more about this when we revisit identity next week.
+
+A common error is attempting to modify a dict while iterating over it.
+
+Imagine the function:
+
+```{python}
+sample = {"A": -3, "B": 2, "C": 0, "D": 100}
+
+# this will not work
+def remove_bad(d):
+    for k, v in d.items():
+        if v <= 0:
+            d.pop(k)
+
+
+try:
+    remove_bad(sample)
+except Exception as e:
+    print(repr(e))
+```
+
+Modifying an iterable while iterating over it is invalid. A list will not allow this either.
+
+What do you do instead?
+
+```{python}
+def remove_with_copy(d):
+    # create a copy that is safe to modify
+    d_copy = d.copy()
+
+    for k, v in d.items():
+        if v <= 0:
+            d_copy.pop(k)
+
+    return d_copy
+
+remove_with_copy(sample)
+```
+
+If creating a copy is too expensive, you can consider this approach:
+
+```{python}
+def remove_without_copy(d):
+    to_remove = []
+
+    for k, v in d.items():
+        if v <= 0:
+            to_remove.append(k)
+
+    for k in to_remove:
+        d.pop(k)
+
+    return d
+
+remove_without_copy(sample)
+```
+
+::: {.callout-warning }
+Note that the two approaches have different behavior. The version without the copy modifies the original dictionary, which can lead to unexpected results.
+:::
+
+## `set`
+
+Sets contain an unordered collection of *unique* & *immutable* values.
+
+  - Unique: no duplicates
+  - Immutable: values cannot be `dict`, `set`, `list`.
+
+Sets themselves are *mutable*.
+
+```{python}
+# defining a set
+animals = {"llama", "panda", "ostrich"}
+print(animals)
+
+# or can be made from an iterable
+animals = set(["llama", "panda", "ostrich"])
+print(animals)
+```
+
+```{python}
+# an empty set, why not {}?
+s = set()
+s
+```
+
+```{python}
+# removes duplicates
+set(["llama", "panda", "ostrich", "ostrich", "panda"])
+```
+
+```{python}
+# can use this behavior to deduplicate a list, if order doesn't matter
+ll = [1, 23, 4920, 2091, 4920, 4920, 4920, 23]
+deduped = list(set(ll))
+print(deduped)
+```
+
+Ordering is lost!
+
+### Set Theory Operations
+
+Python sets are based on the mathematical concept and provide operations based on set theory.
+A few operations:
+
+ - Union (`union()` or `|`}: A set containing all elements that are in both sets
+
+ - Difference (`difference()` or `-`): A set that consists of elements that are in one set but not the other.
+
+ - Intersection (`intersection` or `&`): A set that consists of all elements that are in both sets.
+
+
+```{python}
+# The following creates a set of single strings 'a','b','c','d','e'
+# and another set of single strings 'b','d','x','y','z'
+A = set("abcde")
+B = set(["b", "d", "x", "y", "z"])
+
+print(f"A = {A}\nB = {B}")
+```
+
+```{python}
+# Union Operation
+new_set = A | B
+print(new_set)
+print("---")
+new_set = A.union(B)  # Same operation as above but using method
+print(new_set)
+```
+
+```{python}
+# Difference Operation
+new_set = A - B
+print(new_set)
+print("---")
+new_set = B.difference(A)  # note that order matters for difference
+print(new_set)
+```
+
+```{python}
+# Intersection Operation
+new_set = A & B
+print(new_set)
+print("---")
+new_set = A.intersection(B)  # same operation as above but using method
+print(new_set)
+```
+
+```{python}
+# Symmetric Difference Operation
+new_set = A ^ B
+print(new_set)
+print("---")
+new_set = A.symmetric_difference(B)  # same operation as above but using method
+print(new_set)
+```
+
+### Other Set Methods
+
+| Method | Purpose | 
+|--------|---------|
+| `s.add(item)` | Adds an item to set. |
+| `s.update(iterable)` | Adds all items from iterable to the set. |
+| `s.remove(item)` | Remove an item from set. |
+| `s.discard(item)` | Remove an item from set if it is present, fail silently if not. |
+| `s.pop()` | Remove an arbitrary item from the set. |
+| `s.clear()` | Remove all items from the set. |
+
+```python
+s = {1, 2, 3}
+print(s.remove(4)) # KeyError
+```
+
+```{python}
+s = set()  # why not {}?
+
+s.update(["A", "2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K"])
+
+s.remove("A")
+print("Removed Ace")
+print(s)
+```
+
+```{python}
+s.discard("9")
+print(s)
+```
+
+```{python}
+card = s.pop()
+print("Popped", card)
+print(s)
+```
+
+```{python}
+s.add("Joker")
+print(s)
+```
+
+Sets can be used for set-like operations on other types by converting them to sets.
+
+```{python}
+d1 = {"eggs": 2, "pancakes": 100, "juice": 1}
+d2 = {"eggs": 3, "waffles": 1, "coffee": 1}
+d3 = {"eggs": 1, "fruit salad": 1}
+
+print("All 3 ordered:", set(d1) & set(d2) & set(d3))
+print("Only ordered by #1:", set(d1) - set(d2))
+```
+
+```{python}
+set(d1.items())
+```
+
+Sets are iterable.
+
+```{python}
+s = {"one", "two", "three", "four"}
+for x in s:
+    print(x)
+```
+
+```{python}
+students = [
+    {"name": "Adam", "num": 123},
+    {"name": "Quynh", "num": 456},
+    {"name": "Quynh", "num": 456},
+    {"name": "Adam", "num": 999},
+]
+
+s = set()
+for student in students:
+    s.add(tuple(student.items()))
+    # not 
+    #s.add(student)
+deduplicated = s
+```
+
+```{python}
+for student in deduplicated:
+    print(dict(student))
+```
+
+### `frozenset`
+
+`frozenset` is an immutable set. It has all set methods that do not mutate the set.
+
+```{python}
+# frozenset demo
+nums = [1, 2, 2, 2, 3, 3]
+frozen_nums = frozenset(nums)
+print(frozen_nums)
+```
+
+```{python}
+# allows for nested sets
+nested = {frozen_nums, frozenset("ABC")}
+print(nested)
+```
+
+## Discussion
+
+#### Are sets sequences?
+
+#### Why do set members need to be immutable?
+
+#### How can we store compound values in sets?
+
+#### Why do dictionary keys have the same restrictions?
+

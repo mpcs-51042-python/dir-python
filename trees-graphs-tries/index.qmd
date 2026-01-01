@@ -1,0 +1,267 @@
+---
+title: 'Data Structures: Trees, Graphs, and Tries'
+jupyter: python3
+---
+
+
+
+We saw that linked lists use nodes linked in a linear fashion.
+
+Each node had a "next" (and possibly a reference to "prev").
+
+We can use this same idea with additional links to create **Trees**.
+
+We'll start with a classic **binary search tree**.
+
+Each node has a value, and up to two children, "left" and "right".
+
+Data is stored in the tree such that when a new node is added, if it is less than the current value of a node, it should be stored to the left, and if it is greater, it should be stored to the right.
+
+```{python}
+class Node:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f"({self.value}, {self.left}, {self.right})"
+
+
+class BST:
+    def __init__(self, iterable=None):
+        self.root = None
+        if iterable:
+            for item in iterable:
+                self.add_item(item)
+
+    def add_item(self, newval):
+        # special case: first item
+        if self.root is None:
+            self.root = Node(newval)
+        else:
+            parent = self.root
+            # traverse until we find room in the tree
+            while True:
+                if newval < parent.value:
+                    if parent.left:
+                        parent = parent.left
+                    else:
+                        parent.left = Node(newval)
+                        break
+                else:
+                    if parent.right:
+                        parent = parent.right
+                    else:
+                        parent.right = Node(newval)
+                        break
+
+
+def print_infix(node):
+    """prints items in sorted order"""
+    if node.left:
+        print_infix(node.left)
+    print(node.value)
+    if node.right:
+        print_infix(node.right)
+     
+```
+
+Tree traversal is inherently recursive, so we'll use a recursive function to print the tree in sorted order.
+
+Most tree algorithms will operate on the left & right subtrees the same way, so we can write a recursive function that takes a node and calls itself on the left & right subtrees.
+
+```{python}
+tree = BST()
+tree.add_item("Fox")
+tree.add_item("Wolf")
+tree.add_item("Bear")
+tree.add_item("Raccoon")
+tree.add_item("Rabbit")
+print_infix(tree.root)
+```
+
+#### Aside: defaultdict
+
+```python
+# common pattern:
+if key not in dct:
+    dct[key] = []
+dct[key].append(element)
+```
+
+We can instead use `collections.defaultdict`:
+
+```{python}
+from collections import defaultdict
+
+# give defaultdict a function that it will use to generate missing keys
+dd = defaultdict(lambda: {1, 2, 3})
+
+print(dd["newkey"])
+print(dd)
+
+dd["newkey"].add(4)  # can add to set without ensuring it exists
+print(dd)
+```
+
+## Graphs
+
+![](https://www.simplilearn.com/ice9/free_resources_article_thumb/Graph%20Data%20Structure%20-%20Soni/what-is-graphs-in-data-structure.png)
+
+```{python}
+class Graph:
+    def __init__(self):
+        # create a dictionary where every string maps to a set of strings
+        self.edges = defaultdict(set)
+
+    def add_edge(self, node1, node2):
+        # add in both directions, could alter for directed graph
+        self.edges[node1].add(node2)
+        self.edges[node2].add(node1)
+
+    def find_path(self, from_node, to_node, seen=None):
+        if not seen:
+            seen = set()
+
+        if to_node in self.edges[from_node]:
+            return (from_node, to_node)
+        else:
+            for sibling in self.edges[from_node] - seen:
+                return (from_node,) + self.find_path(
+                    sibling, to_node, seen | set(sibling)
+                )
+            # return self.find_path(
+```
+
+```{python}
+g = Graph()
+g.add_edge("A", "D")
+g.add_edge("B", "D")
+g.find_path("A", "B")
+```
+
+```{python}
+g = Graph()
+g.add_edge("A", "B")
+g.add_edge("B", "C")
+g.add_edge("C", "D")
+g.add_edge("D", "E")
+g.add_edge("A", "D")
+g.find_path("A", "E")
+```
+
+### Discussion
+
+* Graphs & Trees in the real world?
+* Alternate implementations?
+   * NetworkX
+
+## Tries
+
+Usually pronounced "try" to differentiate it from trees.
+
+A **trie** is a data structure that stores data associated with string keys similar to a dictionary in many ways. (Python `dict`s are a different data structure: **hash tables**.)
+
+A **trie** is a specialized data structure, particularly useful for partial matching of strings.  The way the data is stored enables efficient lookup of all strings that start with a given prefix, as well as "fuzzy search" where some characters don't match.
+
+Each node in a **trie** contains:
+
+- an fixed-size array of children
+- a value
+
+Let's imagine a simplified version of a **trie** that can only store string keys with the letters "a", "b", "c", and "d".
+
+So keys "a", "ba", "dddddd", and "abcdabcdaabcad" would all be valid.
+
+Now, instead of `linked_list.next` or `tree_node.left`, we will have four children, so we'll store them in a tuple:
+
+```{python}
+
+class TrieNode:
+    def __init__(self, value=None):
+        self.value = value
+        self.children = [None, None, None, None]
+```
+
+Notice that we **do not store the key**!
+
+```python
+trie = Trie()
+trie["a"] = 1
+```
+
+Represents a tree with a single key "a".  The node "X" is the 0th child of the root node.  It would have no children set, and a value of `1`.
+
+```
+ root
+ / \\\
+ X
+//\\
+```
+Let's look at a trie where someone has also set `trie["aba"] = 100`
+
+
+```
+            root
+           / \\\
+          X 
+         /|\\
+          Y
+         /\\\
+        Z 
+       //\\
+```
+
+Each node has four children, the 0th child being associated with the value "a", the 1st with "b", and so on.
+
+- X is the same as before `value=1`. It now has a child node "Y" in 1st position, associated with "b". 
+- Y has no `value` set, because it only exists to build out the tree in this case. It has a child at "a" position (0).
+- Z is at a terminal position and would have `value=100`.  Since the path from the root is "aba" that is the key associated with the value.
+
+### Lookup Algorithm
+
+Traversing the tree is done by a simple recursive algorithm:
+
+- if there are more letters in the key: convert the next one to an index and traverse to that child node
+- if there are no more letters: the current node is the destination
+
+The correct behavior when encountering a child node that does not (yet) exist depends on the nature of the traversal:
+
+In a lookup (such as `__getitem__`) the key in question must not be in the **trie**.
+If a value was being set, the node should be created.
+
+### Note/Project Hint
+
+`value=None` will create problems in practice, because you should be able to set `trie["abc"] = None` and not have it treat it as if the data was deleted.
+
+Instead, you will probably want to use different values for unset variables.  It is common to make a "sentinel" class for this, a class that is used to create a unique value (like `None` being the sole instance of `NoneType`.).
+
+```python
+class DefaultColor:
+    """ Used as a sentinel class. """
+
+def set_background(color=DefaultColor):
+    """
+    This function exists to set the background color.
+    (In reality, to demonstrate a time when you might treat None and an unset value differently.)
+    
+    If color is set to None, the background will be transparent.
+    If color is not set, the background will default to the user's choice.
+    """
+    if color is DefaultColor:
+        ...
+```
+
+### Trie Complexity
+
+Trie traversal complexity is `O(m)` where **m** is the length of the key strings. 
+
+This in practice would likely be much lower than **n**, the number of words in the data.
+
+### Discussion
+
+- How would prefix lookup work?
+- Wildcards?
+
+

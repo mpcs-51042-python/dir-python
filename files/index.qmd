@@ -1,0 +1,328 @@
+# Files & Paths {.unnumbered}
+
+As you've likely already realized, variables only exist while a program is running.
+
+If we want to persist data between runs of the program, we need to read & write files.
+
+This is a good time to look at an important concept in programming, looking at the same thing through levels of abstraction.
+
+## File I/O
+
+Your hard drive is a piece of physical media: it stores electrical charges representing the 0s and 1s that make up our data.
+Over the years, this format has changed: magnetic tape, hard drive platters, optical drives, flash storage. Each of these stores the 0s and 1s differently,
+ but when we are writing programs we rarely want to worry about the distinct medium.
+
+One of the jobs of the operating system is to provide a layer of *abstraction* for accessing hardware, including the hard drive.
+This takes the form of a **filesystem**, a way of mapping a hierarchy of names to physical locations on the hard drive.
+
+When we refer to `/home/user/code/proj/example.py` -- our operating system maps this to a location on the hard drive.
+In order to write to, or read from that location, it provides an interface that has remained relatively unchanged since 1970.
+
+While the OS-level file API is typically a C API, most languages provide a low-level API that is very similar to the C API.
+
+In Python, that is present in the form of the `open` function and related types.
+
+
+First, we create a "file handle", a special type that allows us to interact
+with an opened file. The built-in `open()` method returns this kind of handle.
+
+```{python}
+fh = open("file.txt")
+```
+
+Once opened, you will use *methods* to read/modify the file:
+
+```{python}
+# read entire file as a string
+text = fh.read()
+print(text)
+```
+
+### File Modes
+
+There is a second parameter to `open()`, which control what our intention is with the file.
+
+| mode | behavior |
+|-|-|
+| `"r"` | read-only, default behavior |
+| `"w"` | write mode, **will erase entire file upon opening** |
+| `"a"` | append mode, will place "cursor" at end of file |
+| `"rb"` | read-only binary mode |
+| `"wb"` | write binary mode |
+
+See more: <https://docs.python.org/3/library/functions.html#open>
+
+Note that write mode erases the file upon opening, this may seem unintuitive but it is quite common to want to replace the entire contents of a file with an edited copy in memory.
+Take care if using this mode that that is what you want.
+
+### file methods
+
+As we've seen, file objects have methods. The methods available depend on what mode was specified upon opening.
+Attempting to use a method that is invalid (e.g. `write` on a read-only file) will result in an error.
+
+| method | purpose |
+|-|-|
+| `read` | read entire file as a single `str` (or `bytes` depending on mode) |
+| `readline` | read a single line of text |
+| `write` | write string (or `bytes)` to file, can be called multiple times |
+| `seek` | move the "cursor" to a different position |
+| `tell` | return the current cursor position |
+| `close` | close a file, syncing the contents back to disk* |
+
+See more: <https://docs.python.org/3/tutorial/inputoutput.html#tut-files>
+
+Forgetting to call `close` on a file could potentially lead to lost data.
+Until it is called, data is not guaranteed to be saved to disk, instead existing in a temporary buffer Python maintains for you.
+
+Because of this, the recommended way to use `open()` has become:
+
+```python
+# read from a text file that already exists
+with open("filename.txt") as f:
+    text = f.read()
+
+# open a new file for writing (erases existing contents)
+with open("newfile.txt", "w") as f:
+    f.write("hello filesystem!\n")
+```
+
+The `with` statement is something we will come back to later, it creats a temporary variable (`f` in the examples above)
+that is only usable within the indented block. When the block is exited `close()` is automatically called.
+
+This is particularly useful when you are concerned about an exception being raised within the block, exiting the block *in any way*, error or not, will still call `close()`.
+
+### In Practice: `json`, `csv`, etc.
+
+While it is possible to have multiple read/write statements within the block, writing data out one line at a time
+it is more common to use libraries that handle common file formats.
+
+These built-in libraries take a file handle, then take care of properly formatting the output for you:
+
+```python
+# writing a CSV file
+with open('some.csv', 'w') as f:
+    writer = csv.writer(f)
+    # data is an iterable of tuples
+    writer.writerows(data)
+```
+
+
+```python
+# reading a CSV file
+with open('some.csv', 'r') as f:
+    reader = csv.reader(f)
+    # reader is an iterable that yields tuples
+    for row in reader:
+        print(row)
+```
+
+```python
+# writing to JSON
+with open("newfile.json", "w") as f:
+    # data is list or dict
+    json.dump(data, f)
+```
+
+```python
+# writing to JSON
+with open("newfile.json", "w") as f:
+    # reads dict or list from JSON file
+    data = json.load(f)
+```
+
+## Manipulating Paths
+
+In practice, with most of the actual complexities of output abstracted away, many will find the hardest part of working with files understanding *paths*.
+
+`pathlib` is a relatively new addition to Python, which accounts for the fact that you'll still see examples using less effective methods, particularly those from the `os` and `os.path` modules.
+
+`pathlib` makes working with file paths much easier, and should be preferred to the `os` methods.
+
+The primary thing the module contains is a type called `Path` [^1]
+
+[^1]: If you look at the documentation, you'll see a few related classes like `PurePath` and `PosixPath`.
+You can ignore those differences for the most part and use `Path`.
+
+The `Path` class represents a single file path, the path to the file I'm writing these words in for instance might be
+
+```python
+Path("/home/james/sites/map-python-data/pathlib/index.qmd")`
+```
+
+While paths may resemble strings, and can be instantiated from them, the `Path` class offers additional behaviors that are specific to file paths.
+
+### `.parent`
+
+`Path` objects have a `.parent` property that is equivalent to going up a directory:
+
+```{python}
+from pathlib import Path
+
+path = Path("/home/user/projects/proj-1")
+print(path.parent)
+print(path.parent.parent)
+```
+
+### Concatenation
+
+`Path` objects use `/` to concatenate parts of a path. (Instead of the `+` used by strings.)
+
+We can use this to build paths out of components:
+
+```{python}
+BASE_DIR = Path("/home/james/sites/map-python-data")
+
+for name in ["pathlib", "web-scraping", "debugging"]:
+    # Path overrides the "/" operator to work as concatenation
+    # this works with strings and Paths
+    file_path = BASE_DIR / name / "index.qmd"
+    print(file_path)
+```
+
+::: {.callout-note}
+This works on Windows as well as Unix-based systems.
+The path separators will be converted by the library so you can use `/` and Windows will see `\` where appropriate.
+:::
+
+## Getting the Right Path
+
+If you've written a file that works with paths you may have run into issues where it doesn't always read the correct file.
+
+Perhaps you had code like:
+
+```python
+with open("filename.txt") as f:
+    f.read()
+```
+
+And found that sometimes it couldn't find the file in question.
+Or if writing files, perhaps sometimes it wrote the file to a different directory than the one you expected.
+
+The reason for this is that if a file path does not start with the root `/` (or `C:/` on Windows) it is **relative**.
+
+These paths will be interpreted as if they begin with the **current working directory**.
+
+This is an opaque concept, and a perfect example of why we tell you to avoid global variables.
+
+Every running program has a global variable representing the "current working directory", often the directory it was run from.
+When you are in your terminal you can see your terminal's current working directory by typing `pwd`.
+Similarly Python has functions  to let you examine (`os.getcwd`) and change (`os.chdir`) the current working directory.
+
+As you may recall, global variables can make it hard to reason about programs, since any function might modify them in unexpected ways.
+
+```python
+# global variables create hard-to-follow code
+some_variable = 100
+f()
+g()
+h()
+print(some_variable)
+```
+
+*What will print? That depends on what `f`, `g`, and `h` do to the global state!*
+
+**As we'll see, the key to robust file-handling that works equally well on your system as it does on your peers' is to generally avoid using this global state altogether.**
+
+### Absolute Paths
+
+One solution to this problem is to use absolute paths, you may find that instead of `open("data/target.json")` you can get your code to work when you use `open("/home/user/projects/proj-2/data/target.json")`.
+
+But this path is unique to your computer. On my machine I may need `"/home/james/dev/proj2/data/target.json"`.
+
+How can we do this without constantly dueling edits in our Git repository?
+
+### `__file__`
+
+If we're concerned about portability we want to have a way to say "the directory next to this one" or "the directory that is a parent of this one".
+
+Often we're trying to create a layout like this:
+
+```
+proj-dir/
+├── data
+│   └── target.json
+└── src
+    └── script.py
+```
+
+`script.py` would like to be able to write to `data/target.json` in a reliable way
+regardless of what the current working directory is.
+
+We'd like to do this without knowing exactly where `proj-dir` is as well, since it may be in `/Users/james/projects` on one machine and `/home/stephen/my-homework` on another.
+
+To do this, we can define our paths using the relationship between the two files.
+
+The algorithm for doing this is:
+
+1. Have the Python file get the path *to itself*.
+2. Determine the relative path from the Python file in question to the data file.
+3. Use pathlib to combine these.
+
+Python has a special variable `__file__` that'll help with step 1, and the rest of the steps we can do with standard path operators:
+
+```python
+# assume we're in /home/james/projects/proj-dir/src/script.py
+from pathlib import Path
+
+# this creates a Path object that is the full path to script.py
+# and then uses .parent to go up one level, to
+# "/home/james/projects/proj-dir/src/"
+BASE_DIR = Path(__file__).parent
+
+# Combine that path with a relative path from 'src'
+# to the file in question.
+#  - up one directory, then into the data directory
+data_path = BASE_DIR / "../data/target.json"
+```
+
+Forming paths using `__file__` makes them consistent as long as the
+`.py` files do not move relative to the data.
+
+## Using `Path` objects
+
+`Path` objects can typically be passed in anywhere a filename is expected, so `open("filename.txt", "w")` can become `open(path_obj, "w")`.
+You can also write this as `path.open("w")`. (See [pathlib.Path.open](https://docs.python.org/3/library/pathlib.html#pathlib.Path.open).)
+
+`Path` objects also have quite a few helper methods that can make your life easier:
+
+### `Path.exists`
+
+If you want to check if a given file exists, you can construct a path to it and then call `.exists`:
+
+```
+path = BASE_DIR / "data.csv"
+if path.exists():
+    read_and_process(path)
+else:
+    create_initial_data(path)
+```
+
+### `Path.mkdir`
+
+A common pattern is to want to create a directory if it doesn't exist:
+
+```
+log_directory = BASE_DIR / "logs"
+log_directory.mkdir(exist_ok=True, parents=True)
+```
+
+This also demonstrates two useful parameters:
+
+- `exist_ok=True` makes it so that the function will not raise an error if the directory already exists.
+- `parents=True` will also create parent directories if needed.
+
+### Quick Reading/Writing
+
+If you are reading/writing the entire file in one go, instead of using the `IO` object returned by `open`, you can call `read_text` and `write_text` directly on the `Path` as a shortcut.
+
+```{python}
+p = Path("file.txt")
+p.write_text('Text file contents')
+p.read_text()
+```
+
+---
+
+## Further Exploration
+
+See the official [pathlib documentation](https://docs.python.org/3/library/pathlib.html) for more methods and examples.

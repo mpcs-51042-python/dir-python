@@ -1,0 +1,480 @@
+# Arguments
+
+While sometimes we can write a function that takes no arguments, usually we'll want to parameterize a function.
+
+We call the variables that are passed in to a function *arguments* or *parameters*.
+
+## Passing Arguments
+
+In some languages, you can pass arguments by value or by reference.
+In Python all values are "passed by assignment".
+
+```python
+def func(a, b):
+    ...
+    
+x = 7
+y = [1, 2, 3]
+func(x, y)
+
+# you can think of the function starting with assignments to its parameters
+a = x
+b = y
+```
+
+This means mutability determines whether or not a function can modify a parameter in the outer scope.
+
+Unless otherwise specified, function arguments are **required**, and can be passed either **by position** or **by name**.
+
+As we will see, we can also make optional arguments, as well as arguments that can only be passed by position or by name.
+
+```python
+def calculate_cost(items, tax):
+    pass
+
+# all arguments passed by position
+calculate_cost(["salmon", "eggs", "bagels"], 0.05)
+# tax passed by name
+calculate_cost(["salmon", "eggs", "bagels"], tax=0.05)
+```
+
+## Optional Arguments
+
+Python allows default values to be assigned to function parameters.
+
+Arguments with default values are not required.  Passed in values will override default.
+
+```{python}
+#| tags: []
+# default arguments
+def is_it_freezing(temp, is_celsius=True):
+    if is_celsius:
+        freezing_line = 0
+    else:
+        freezing_line = 32
+    return temp < freezing_line
+```
+
+```{python}
+#| tags: []
+print(is_it_freezing(65))
+print(is_it_freezing(30))
+print(is_it_freezing(30, False))
+print(is_it_freezing(-1, is_celsius=True))
+```
+
+You can have as many optional parameters as you wish, but they must all come after any required parameters.
+
+```python
+# intentional error
+def bad_function(a, b="spam", c):
+    pass
+```
+
+## Argument Matching
+
+There are two important rules in determining which arguments matched to which parameters:
+
+- Positional arguments are matched from left to right.
+- Keywords matched by name.
+
+```{python}
+#| scrolled: true
+# print() as an example [call help to see docstring]
+help(print)
+```
+
+```{python}
+print("hello", "positional", "world", sep="~", end=";")
+```
+
+## keyword and positional-only arguments
+
+Including a bare `*` as a parameter means everything after can only be passed by keyword.
+
+
+For example:
+
+```{python}
+def request_page(
+    url,
+    verify,
+    cache=True,
+    retry_if_fail=False,
+    send_cookies=False,
+    https_only=True):
+    pass
+
+request_page("https://example.com", True, False, True, False)
+# or did you mean
+request_page("https://example.com", True, False, False, True)
+```
+
+```python
+# instead, use keyword-only
+def request_page(url, *, verify, follow_redirects=False, cache=True, send_cookies=False, https_only=True):
+    pass
+
+# forces keyword parameters
+# & allows you to change the function definition leter
+request_page("https://example.com", verify=True)
+```
+
+Including a bare `/` means everything beforehand is positional only:
+
+```{python}
+def pos_only(x1, x2, /):
+    print(x1, x2)
+```
+
+```{python}
+pos_only("hello", "world")
+```
+
+```python
+# ERROR: not allowed
+pos_only(x1="hello", x2="world")
+```
+
+## Variable Length Arguments
+
+Sometimes we want a function that can take any number of parameters (seen above in `print`).
+
+Collect arbitrary positional arguments with `*param_name`. (Often `*args`)
+
+Collect arbitrary named arguments with `**param_name`. (Often `**kwargs`)
+
+```{python}
+# *args example
+
+def add_many(*args):
+    #print(args, type(args))
+    total = 0
+    for num in args:
+        total += num
+    return total
+```
+
+```{python}
+add_many(1, 2, 3, 4, 5)
+```
+
+
+```{python}
+# **kwargs example
+
+def show_table(**kwargs):
+    for name, val in kwargs.items():
+        print(f"{name:>10} | {val}")
+        
+```
+
+(Using advanced string formatting, see <https://docs.python.org/3/library/string.html#formatstrings>)
+
+
+```{python}
+show_table(spam=100, eggs=12, other=42.0)
+```
+
+```{python}
+# combining args & kwargs
+def func(a, *args, n=5, **kwargs):
+    print(a, args, n, kwargs, sep="\n")
+
+func(1, 2, 3, 4, c=1, b=2)
+```
+
+```python
+# ERROR: why?
+func(x=7, x=8)
+```
+
+```{python}
+func(1, 2, 3, rest=5)
+```
+
+```{python}
+# some built-in functions work this way as well
+max(1, 2, 3, 4)
+```
+
+## Unpacking/Splatting
+
+`*` and `**` are also known as unpacking or splatting operators.
+
+When in a function signature, they coalesce arguments into a `tuple` and `dict` as we've seen.
+
+When used on a parameter when calling a function, they "unpack" the values from a sequence or dict.
+
+```{python}
+def takes_many(a, b, c, d):
+    print(f"{a=} {b=} {c=} {d=}")
+
+# any iterable can be splatted
+three = ["A", "B", "C"]
+four = (1, 2, 3, 4)
+five = (False, False, False, False, False)
+```
+
+```{python}
+takes_many(*four)
+```
+
+```{python}
+takes_many(*three, 4)
+```
+
+```{python}
+takes_many(4, *three)
+```
+
+```python
+# ERROR
+takes_many(*five)
+```
+
+```{python}
+# double-splat, unpack a dictionary into keyword args
+keywords = {"a": "sun", "c": "venus", "b": "mars"}
+takes_many(**keywords, d="moon")
+```
+
+
+```{python}
+#| tags: []
+import math
+
+
+def distance(x1, y1, x2, y2):
+    """
+    Find distance between two points.
+    
+    Inputs:
+        point1: 2-element tuple (x, y)
+        point2: 2-element tuple (x, y)
+
+    Output: Distance between point1 and point2 (float).
+    """
+    return math.sqrt(math.pow(x2-x1, 2) + math.pow(y2-y1, 2))
+```
+
+```{python}
+#| tags: []
+# we can use sequence-unpacking to turn tuples/lists into multiple arguments
+a = (3, 4)
+b = [5, 5]
+distance(*a, *b) # our 2 parameters become 4
+```
+
+```{python}
+a = [1,2,3,4]
+a[0:2], a[2:]
+```
+
+```python
+http_params = {"verify": False, "https_only": True, "timeout_sec": 3}
+request_page("http://example.com", **http_params)
+```
+
+```{python}
+def fn1(url, kw1=None, kw2=None, kw3=None):
+    ...
+    
+def fn2(url, **kwargs):
+    if is_valid(url):
+        kwargs["additional_arg"] = 4
+        return fn1(url, **kwargs)
+    return None
+    
+```
+
+## Caveat: Mutable Default Arguments
+
+An important rule to remember is that the declaration (`def` statement) of a function is only evaluated once, not every time the function is called.
+
+This can lead to surprising behavior at first.
+It is important to understand & remember that only the inner-block of a function is executed on each call.
+
+This is a common cause of bugs when a mutable is a part of the default arguments.
+
+```{python}
+def add_many(item, n, base_list=[]):
+    print("adding to", id(base_list))
+    base_list.extend([item] * n)
+    return base_list
+```
+
+```{python}
+# passing in a list for base_list works as expected...
+animals = ["cow"]
+print("animals id", id(animals))
+add_many("bear", 3, animals)
+add_many("fish", 5, animals)
+print(animals)
+```
+
+```{python}
+#| tags: []
+# let's invoke without a base_list parameter
+animals2 = add_many("dog", 3)
+print(animals2)
+```
+
+```{python}
+#| tags: []
+animals3 = add_many("turtle", 4)
+print(animals3)
+```
+
+```{python}
+#| tags: []
+animals2
+```
+
+
+```{python}
+#| tags: []
+animals2 is animals3
+```
+
+The correct pattern is to **avoid mutable defaults** and instead assign a fresh
+mutable within the function as needed:
+
+
+```{python}
+# fixed version
+def add_many(item, n, base_list=None):
+    if base_list is None:
+        base_list = []
+    base_list.extend([item] * n)
+    return base_list
+```
+
+```{python}
+temp = []
+print(id(temp))
+returned = add_many("fish", 3)
+print(returned)
+print(id(returned))
+```
+
+This is not a bug per se, but a somewhat unfortunate side effect of how Python proceses statements and handles mutables.
+
+There *are* times when it can be used to your advantage.
+
+In the below example, the `cache_dict` persists between calls, allowing it to be used
+as a sort of cache/memory for the calling function.
+ This should only be done thoughtfully and with ample commenting to explain the intended behavior.
+
+```{python}
+def add_cached(x, y, cache_dict={}):
+    print(cache_dict)
+    if (x, y) not in cache_dict:
+        print("did calculation", x, y)
+        cache_dict[x, y] = x + y
+    return cache_dict[x, y]
+```
+
+```{python}
+add_cached(4, 5)
+```
+
+```{python}
+add_cached(6, 10)
+```
+
+```{python}
+# will use cache
+add_cached(4, 5)
+```
+
+
+## Discussion
+
+### What types are `args` and `kwargs`?
+
+### When should you use defaults, name-only, positional-only?
+
+Your function provides an "interface" for other programmers to interact with.
+
+Proper choices help other programmers understand how to call your functions and should be chosen to make things easier for others.
+
+What would you prefer?
+
+`get("https://example.com", [500, 501, 503], 2.5, 2, False)`
+
+or
+
+`get("https://example.com", retry_if=[500, 501, 503], timeout_sec=2.5, retries=2, verify_ssl=False)`
+
+**Always consider "future you" among those hypothetical "other programmers".**
+
+### Examples
+
+```{python}
+# two required args
+def f(x, y):
+    print(f"{x=} {y=}")
+```
+
+```{python}
+# a default argument
+def g(x, y=3):
+    print(f"{x=} {y=}")
+```
+
+```{python}
+# all default args
+def h(x="abc", y=3, z=True):
+    print(f"{x=} {y=} {z=}")
+```
+
+```{python}
+# mixture of arg types
+def j(x, *args, y=3, **kwargs):
+    print(f"{x=} {y=} {args=} {kwargs=}")
+```
+
+```python
+
+# 1.
+f()
+
+# 2.
+f(x=1, 2)
+
+# 3.
+d = {"x": 0, "y": 0}
+f(**d)
+
+# 4.
+g(**d)
+
+# 5.
+g(**d, x=2)
+
+# 6.
+g(x=1)
+
+# 7.
+h()
+
+# 8.
+h(**d)
+
+# 9.
+h(z=False, **d)
+
+# 10.
+j(1, 2, 3, 4, 5, 6, 7)
+
+# 11.
+j(**d)
+
+# 12.
+t = (9, 9, 9, 9, 9, 9)
+j(t)
+
+# 13.
+j(*t)
+```

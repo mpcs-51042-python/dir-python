@@ -1,0 +1,499 @@
+# Statements
+
+Python programs are made up of statements. **Expressions** are special types of statements that represent values.
+
+Now we'll look at statements related to **control flow**, deciding which lines of code will be executed next.
+Without them our programs would just execute one line after the next with no exception.
+
+## Indentation
+
+Perhaps the most jarring change for C/Java/JavaScript programmers: Python does not use braces.
+
+Instead, indentation signifies code block boundaries.
+
+```python
+from __future__ import braces
+SyntaxError: not a chance
+```
+
+## `if, elif, else` Statements
+
+```python
+if condition:
+    statement1
+    statement2
+elif condition:    # else if
+    statement3
+else:
+    statement4
+    statement5
+```
+
+- Note the colon after each condition.
+- `elif` and `else` are optional
+- parenthesis around the expression are optional
+- each line should be indented four spaces
+
+This is a statement because you don't write
+
+```
+x = if ...:
+        ...
+    else:
+        ...
+    else:
+        ...
+```
+
+Instead, these lines of code are evaluated conditionally.
+
+```{python}
+#| slideshow: {slide_type: subslide}
+#| tags: []
+# if example
+
+x = 100
+
+if x < 0:
+    print("negative")
+    print("second line")
+elif x == 0:
+    print("zero")
+elif x == 4:
+    print("four")
+else:
+    print("positive")
+```
+
+## `while` statement
+
+```python
+while condition:
+    statement1
+    statement2
+```
+
+```{python}
+#| scrolled: true
+#| slideshow: {slide_type: subslide}
+#| tags: []
+time_left = 10
+
+while time_left != 0:
+    print(f"{time_left}...")
+    time_left -= 1
+
+print("blast off!") 
+```
+
+## `for` statement
+
+```python
+for var in iterable:
+    statement1
+    statement2
+```
+
+This looks a bit different from C/Java.
+
+Also, what is an iterable?
+
+For now, just know that sequences are iterables, we'll cover iterables soon.
+
+```{python}
+cities = [
+    "Tokyo",
+    "Delhi",
+    "Shanghai",
+    "São Paulo",
+    "Mexico City",
+    "Cairo",
+    "Mumbai",
+    "Beijing",
+    "Dhaka",
+    "Osaka",
+]
+
+for city in cities:
+    if city == "Cairo":
+        # we don't need to print Cairo out
+        break
+    print(city)
+
+seconds_left = 7
+```
+
+```{python}
+for city in cities:
+    need_to_break = False
+    for letter in city:
+        if letter == "y":
+            need_to_break = True
+            break
+        print(letter)
+    if need_to_break:
+        break
+```
+
+### `break & continue`
+
+You may have seen `break` and `continue` in other languages.
+
+If so, they work the same way in Python.
+
+`break` - exit a loop immediately
+
+`continue` - immediately begin next iteration of loop
+
+`else` statement after `for` or `while` - executes only if no break was called
+
+```{python}
+# break/else demo
+
+time_left = 10
+abort_at = 4
+
+while time_left > 0:
+    print(f"{time_left}...")
+    time_left -= 1
+    if time_left == abort_at:
+        print("Launch Aborted")
+        break
+else:
+    # this only runs if we don't break
+    print("blast off!")
+```
+
+```{python}
+s = "Hello class, my name is James"
+
+for ch in s:
+    if ch == ",":
+        print("found a comma!")
+        break
+else:
+    print("no comma found!")
+```
+
+```{python}
+# continue demo
+
+print(cities)
+visited = ["Chicago", "Mexico City", "Shanghai"]
+
+for city in cities:
+    # this is not a great use, what would you do instead?
+    if city in visited:
+        continue
+    print(f"I would like to visit {city}")
+```
+
+`continue` is not used as often as `break` in practice, but can be useful if you want to skip part of a loop.
+
+Given the somewhat less straightforward nature of a `continue`, a comment explaining your intent is a good idea.
+
+#### idiom: double-break with an inner boolean
+
+```{python}
+items = ["hello", "world"]
+found = False
+
+# we want to exit as soon as an e is found in *either* loop
+for item in items:
+    for letter in item:
+        if letter == "e":
+            found = True
+            break
+        print(letter)
+    if found:
+        break
+```
+
+#### idiom: "infinite" loops
+
+```python
+while True:
+    do_something()
+    if condition:
+        break
+```
+
+Similar to a `do while` loop in C/C++, where condition is checked after one iteration.
+
+### range
+
+Another iterable!
+
+`range(stop)` # goes from 0 to (stop-1)
+
+`range(start, stop)` # goes from start to (stop-1)
+
+Same rules as slice, always **inclusive** of start, **exclusive** of stop.
+
+*or as you'd write mathematically:* ```[start, stop)```
+
+```{python}
+for x in range(5, 25):
+    print(x)
+```
+
+```{python}
+# Note: we'll see a better way to do what this loop does below.
+s = "hello"
+for i in range(len(s)):
+    print(i, s[i])
+```
+
+### `enumerate`
+
+Another iterable, for when we need the index along with the object.
+
+Gives us back two element tuples:
+
+`(index, element)`
+
+```{python}
+for i, letter in enumerate(s):
+    if letter == "w":
+        print(i)
+```
+
+```{python}
+# same as above -- but less idiomatic & clear
+for tup in enumerate(s):
+    if tup[1] == "w":
+        print(tup[0])
+```
+
+## Iteration
+
+A for loop can be described as iterating over an iterable:
+
+```
+for var_name in iterable:
+    statement1
+    statement2
+    ...
+```
+
+An **iterable** is any object that can be iterated over. All sequences are iterable, what else is?
+
+### range
+
+Another iterable!
+
+`range(stop)` # goes from 0 to (stop-1)
+
+`range(start, stop)` # goes from start to (stop-1)
+
+Same rules as slice, always **inclusive** of start, **exclusive** of stop.
+
+or as you might write: ```[start, stop)``` -- we've seen this before with slicing
+
+```{python}
+for x in range(12):
+    print(x)
+```
+
+```{python}
+for x in range(8, 12):
+    print(x)
+```
+
+```{python}
+r = range(12)  # hmm?
+print(type(r))
+```
+
+```{python}
+# a common pattern, but we'll see a better way with enumerate
+i = 0
+for x in ["A", "B", "C"]:
+    print(i, x)
+    i += 1
+```
+
+### `enumerate`
+
+Another function that returns an iterable, for when we need the index along with the object.
+
+`enumerate(original_iterable)` yields two element tuples: `(index, element)` for every item in the original.
+
+```{python}
+# "incorrect" example
+# find using range/len - as you might think to write it based on past experience
+def find_r(s, letter_to_find):
+    for i in range(len(s)):
+        if s[i] == letter_to_find:
+            return i
+    return -1
+```
+
+```{python}
+find_r("Hello World", "W")
+```
+
+```{python}
+# find using enumerate - Pythonic, more efficient
+def find_e(s, letter_to_find):
+    for i, letter in enumerate(s):  # tuple unpacking
+        if letter == letter_to_find:
+            return i
+    return -1
+```
+
+```{python}
+find_e("Hello world", "w")
+```
+
+```{python}
+find_r("Hello world", "?")
+```
+
+```{python}
+# note: a built-in exists and should be used in practice
+s = "Hello world"
+s.find("w")
+```
+
+### iterable unpacking
+
+When you know exactly how many elements are in an iterable, you can use this syntax to "unpack" them into variables:
+
+```{python}
+tup = (1, 2, 3)
+ll = ["a", "b", "c"]
+
+x, y, z = tup
+print(x, y, z)
+```
+
+```{python}
+# idomatic swap using unpacking
+x = 7
+y = 8
+x, y = y, x
+print(x, y)
+```
+
+## Functions
+
+A function is a set of statements that can be called more than once.
+
+Benefits of functions:
+
+- Encapsulation: package logic for use in multiple places
+- Allows programmer to avoid copy/paste to repeat same task, which helps maximize code reuse and minimize redundancy
+- Procedural decomposition: split our program into subtasks (i.e., functions) with separate roles.
+- Make life easier for debugging, testing, doing maintenance on code
+
+```python
+def function_name(arg1: int, arg2: float, arg3: tuple) -> None:
+    """
+    Description of function task 
+
+    Parameters: 
+        arg1: description of arg1 
+        arg2: description of arg2
+        arg3: description of arg2
+
+    Returns:
+         Description of what this function returns, if anything.
+    """
+    statement1
+    statement2
+    statement3
+    return value  # optional
+```
+
+### return
+
+- `return` may appear anywhere in a function body, including multiple times.
+
+- The first `return` encountered exits the function immediately.
+
+- Every function in python returns a value, `None` if not stated/reached.
+
+```{python}
+def is_even(num):
+    return num % 2 == 0
+
+print(is_even(3))
+```
+
+```{python}
+# what happens if return is missing?
+def bad_return(num):
+    if num > 10000: 
+        return False
+```
+
+```{python}
+print(bad_return(1))
+```
+
+###  `pass` statement
+
+Can be used whenever you need to leave a block empty.  Usually temporarily.
+
+```python
+if x < 0:
+    pass # TODO: figure this out later
+else:
+    return y / 2 - x
+
+def implement_me():
+    pass
+```
+
+### Type Annotations
+
+Type annotations are a newer Python feature.
+They exist to provide hints as to what types a function takes.
+
+Python **does not enforce these**, think of them as documentation.
+
+You will start seeing them in assignments and documentation, and we'll discuss them more later in the quarter.
+
+```{python}
+# I've broken this function into multiple lines, which is allowed
+# due to the parentheses.
+
+def find_value(
+    a_list: list[list[str]],  # this parameter is a list of integers
+    num: int,                 # this parameter is a single integer
+) -> (
+    int | None
+):  # this annotation "-> int | None" indicates return type can be int or None
+    pass
+
+def find_value(a_list: list[str], num: int) -> int | None:  
+    pass
+```
+
+```{python}
+x = find_value(3.0, "hello")
+```
+
+### docstrings
+
+Function comments should be done in the form of a docstring, i.e., a multi-line string (delimited by triple quotes) after the function header.
+
+This comment must contain information specific to what a function does. It should also include a description of the purpose and expected input arguments, the expected output values, and how error conditions are handled.
+
+Example:
+```python
+def hypotenuse(a: float, b: float) -> float:
+    """
+    This function solves Pythagorean theorem a^2 + b^2 = c^2
+    for the value of c.
+
+    Parameters:
+      a, b: the lengths of sides of a right triangle.
+
+    Returns:
+      The length of the hypotenuse.
+    """
+
+    return math.sqrt(a**2 + b**2)
+```

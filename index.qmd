@@ -1,0 +1,35 @@
+## Introduction {.unnumbered #sec-intro}
+
+This site contains course notes for MPCS 50142: Python Programming.
+
+
+This course assumes that you have basic familiarity with Python and programming, but are interested in having a much better understanding of both.
+
+### Goals
+
+- Build general-purpose programming skills: decomposing problems into parts, making thoughtful data structures and algorithm choices, and understanding what your code is doing and how to debug it.
+- Using Python's strengths as a multi-paradigm language, explore differences between procedural, functional, and object-oriented programming.
+- Introduce the powerful ecosystem of Python libraries, and encourage continued growth as a Python programmer beyond this course.
+
+### Course Resources
+
+- [Course Website](https://mpcs51042.jpt.sh)
+- [UChicago CS Student Resource Guide](https://uchicago-cs.github.io/student-resource-guide/)
+
+### About
+
+These notes were originally written by [James Turk](https://jpt.sh) for [MPCS 51042](https://mpcs51042.jpt.sh)
+at The University of Chicago.
+
+They are not meant to be a complete resource on Python, but to guide my lectures.
+
+If you find them useful, or notice any issues, [let me know](mailto:hi@jpt.sh).
+
+
+::: {.callout-note}
+## Licensing
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://notes.jpt.sh/dir-python/"dir(python)</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.jpt.sh">James Turk</a> is licensed <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a></p>
+
+If you find these notes useful, please drop me a note!
+:::
+

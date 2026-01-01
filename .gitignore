@@ -1,0 +1,4 @@
+_book/
+.quarto/
+*.log
+__pycache__/

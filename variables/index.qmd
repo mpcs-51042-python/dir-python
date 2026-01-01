@@ -1,0 +1,660 @@
+# Variables & Expressions
+
+Python code can be thought of as a series of **statements**.
+As we review the syntax, we'll see the familiar `import`, `if`, and `for` -- all examples of statements.
+
+First we'll focus on the **expression**, a special type of statement, as well as **names**, what Python calls variables.
+
+## Expressions
+
+An expression is anything which evaluates to some *value*.
+
+**Some Expressions**
+
+- `3.145`
+- `"hello"`
+- `3 + 4`
+- `func(y)`
+- `person.age * 4`
+
+All of these can be said to represent a value, some directly, which we call *literals*: `4`, `"hello"`, `[1, 2, 3]`.
+
+Others require further evaluation (e.g. `3 + 4` or `func(y)`) to be resolved to a specific value, but ultimately can be reduced to a value as well.
+
+Though a bit circular, it may be helpful to think of the rule **if it can be assigned to a variable, it is an expression**.
+
+## Assignment Statements
+
+Assignment statements give a name to a value resulting from an expression.
+
+```{python}
+radius = 5
+area = 3.14 * radius ** 2
+name = "James"
+in_class = True
+```
+
+Assignment statements:
+
+- Have a **name** on the left-hand side, an **expression** on the right-hand side.
+- Do not require any additional declaration or type.
+- Names must consist of letters, numbers, and/or underscore `_`. Must begin with a letter or underscore.
+- Conventionally written in `snake_case`, with words separated by underscores. (as opposed to `camelCase`)
+
+Variables in Python work a bit differently than you might expect coming from another language.
+
+In many languages, variables are typed, meaning that when you declare a variable it is a "box" that can store a certain sized item.
+
+```c
+// this is C code, the type is part of the variable declaration
+int num_fish = 3;
+char* name = "William";;
+
+// we can not do this!
+num_fish = name;
+```
+
+In Python, we just assign an expression to a name.
+
+```python
+num_fish = 3
+name = "William"
+num_fish = name   # this is allowed! (though bad practice)
+```
+
+Does this mean variables are untyped?
+
+Let's use Python's `type()` function to see that Python does indeed have types:
+
+```{python}
+print(type(radius))
+print(type(area))
+print(type(name))
+print(type(in_class))
+```
+
+In Python, types are *inferred*, not explicitly stated.
+
+As we'll see, the type is associated with the variable, not the name, a subtle distinction but one of the most important concepts to understand Python's behavior.
+
+## Scalar Types
+
+Python has several built in scalar types.  (Scalar types can have *one* value at a time.)
+
+Numeric: `int`, `float`, `complex`
+
+Bool: `bool`
+
+None: `None`
+
+Types are in part defined by what can be done with them, let's look at some **operators**:
+
+### Numeric Operators & Functions
+
+| Operation | Result |
+|-----------|--------|
+| `x + y`   | sum    |
+| `x - y`   | difference |
+| `x * y`   | product |
+| `x / y`   | quotient |
+| `x // y`  | floored quotient |
+| `x % y`   | remainder of `x / y` (modulo) |
+| `x ** y`  | `x` to the power of `y`
+| `-x`      | negation of `x` |
+| `abs(x)`  | absolute value / magnitude of `x` |
+| `int(x)`  | `x` converted to integer (floor) |
+| `divmod(x, y)` | the pair `(x // y, x % y)` |
+
+
+```{python}
+3 / 5
+```
+
+```{python}
+3 % 5
+```
+
+```{python}
+divmod(3, 5)
+```
+
+```{python}
+x = 2.999
+print(int(2.999))
+```
+
+```{python}
+print(100 // 2)
+```
+
+```{python}
+m = 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2
+n = 3628800  # 10!
+print(n % 11)
+```
+
+::: {.callout-warning}
+
+### Floating Point Precision
+
+Floating point numbers have limited precision, as demonstrated below.
+
+This is true in all languages, and is a function of how modern computers work.
+
+
+```{python}
+(0.1 + 0.2) == 0.3
+```
+
+**what?!**
+
+```{python}
+0.1 + 0.2
+```
+
+For this reason, instead of strict equality checking, it is correct to compare that the error is less than some very small epsilon value.
+
+**Question** What problems could this cause?  What can be done about it?
+
+```{python}
+# instead
+episilon = 0.000000001
+print(abs((0.1 + 0.2) - 0.3) < episilon)
+```
+
+:::
+
+### Shorthand Operators
+
+| Operation | Result | 
+|-----------|--------|
+|  `a += b `  | `a = a + b` |
+|  `a -= b `  | `a = a - b` |
+|  `a /= b ` | `a = a / b` |
+|  `a *= b `  | `a = a * b` |
+|  `a //= b`  | `a = a // b` |
+
+```{python}
+x = 64
+x *= 2
+print(x)
+
+
+s = "Hello"
+s += " Class"
+print(s)
+```
+
+::: {.callout-note}
+### Question
+
+What would happen if we did `s /= "e"`? Try it and confirm your guess.
+:::
+
+
+### Type Conversion
+
+If mixing numeric types in arithmetic, Python will automatically upconvert numeric types to the type that can represent more data:
+
+- int, int -> int
+- int, float -> float
+- float, complex -> complex
+
+```{python}
+y = 4.1
+x = int(3 + y)
+
+print(x, type(x))
+```
+
+This behavior is why we have two division operators:
+
+```{python}
+x = 2 // 1
+print(x, type(x))
+
+x = 2 / 1
+print(x, type(x))
+```
+
+### Comparison Operators
+
+| Syntax     | Definition                                                      |
+| ---        | ---                                                             |
+| ``x > y``  | ``True`` if left operand is greater than the right              |
+| ``x < y``  | ``True`` if left operand is less than the right                 |
+| ``x == y`` | ``True`` if both operands are equal                             |
+| ``x != y`` | ``True`` if both operands are not equal                         |
+| ``x >= y`` | ``True`` if left operand is greater than or equal to the right  |
+| ``x <= y`` | ``True`` if left operand is less than or equal to the right     |
+
+
+### Booleans
+
+Resulting type of any of the relational operators.
+
+Only two possible values: `True`, `False`
+
+### Logical Operators
+
+  - Operators that perform logical AND, OR, and NOT 
+  - These operators *short-circuit* (i.e., when an expression is stopped being evaluated as soon as its outcome is determined.) 
+
+| Syntax      | Definition                                         |
+| ---         | ---                                                |
+| ``x and y`` | ``True`` if both the operands are true             |
+| ``x or y``  | ``True`` if either of the operands is true         |
+| ``not x``   | ``True`` True if operand is false                  |
+
+
+**Note: these do not use `&` or `|` like in C/Java** 
+Those symbols have a different purpose in Python.
+
+::: {.callout-note}
+### Question
+
+```python
+a = True and print("a")
+b = False and print("b")
+c = False or print("c")
+d = True or print("d")
+```
+
+What will this code print?
+:::
+
+
+::: {.callout-note}
+### Question
+```python
+import time
+
+# we'll discuss how to write functions/etc. soon
+def short_func():
+    print("short_func")
+    return False
+
+def long_func():
+    print("long_func")
+    time.sleep(3)
+    return False
+```
+
+Are these equivalent?
+
+```python
+result = long_func() and short_func()
+```
+
+```python
+result = short_func() and long_func()
+```
+
+:::
+
+### None
+
+Represents the absence of a value. It is the only value of `NoneType`.
+We'll talk more about uses of `None` as the course progresses.
+
+```{python}
+#| slideshow: {slide_type: subslide}
+#| tags: []
+x = None
+print(x)
+print(type(x))
+```
+
+## Sequence Types
+
+We've seen that **scalar** types take on a single value.
+
+**Sequences** store multiple values in a defined order.
+
+We'll take a look at `str`, `list`, and `tuple`.
+
+### Strings
+
+Can use `'single'` or `"double"`, or `"""triple for multi-line strings"""`.
+
+```python
+
+s1 = "Molly's Idea"
+
+s2 = '"I think, therefore I am" - Descartes'
+
+s3 = """From time to time
+The clouds give rest
+To the moon-beholders.
+
+- Matsuo Bashō
+"""
+```
+
+#### Escape Characters
+
+Like many languages, Python supports special 'escape characters'.
+
+```{python}
+print("Another way to \"quote\" something.")
+
+print('An alternate apostrophe: \' ')
+
+print("Newline character: \n starts a new line.")
+
+print("Sometimes you need a \\ backslash. \" ")
+```
+
+| Character | Meaning |
+|-----------|---------|
+|  \\n       | New Line|
+|  \\t       | Tab     |
+|  \\\\       | \ (backslash) |
+|  \\\'       | ' (apostrophe) |
+|  \\\"       | " (quote) |
+
+#### Raw Strings
+
+```{python}
+error = "C:\new\test.py"
+print(error)
+```
+
+**What happened?**
+
+Sometimes it is annoying to need to escape every backslash.
+
+Two common examples are when dealing with file paths on Windows or Regular Expressions.
+
+In this case we can use r"" to denote a raw string.
+
+
+```{python}
+fixed = r"C:\new\test.py"
+print(fixed)
+```
+
+```{python}
+# still a str
+type(fixed)
+```
+
+#### String Formatting
+
+You'll often need to create strings comprised of other values.
+
+There are two common ways to do this, `.format` and f-strings:
+
+```{python}
+# format example 1: implicit
+
+fmt = "{}@{}.{}"
+email = fmt.format("username", "example", "com")
+print(email)
+```
+
+```{python}
+# format example 2: positional
+
+template = "Hi {0}, you are user {1}! \n Bye {0}!"
+message = template.format("Tina", 2.5)
+print(message)
+
+# note that integer was converted automatically
+# most useful if you want to use the same value multiple times
+```
+
+```{python}
+#| slideshow: {slide_type: subslide}
+# format example 3: keyword
+
+message = "Hi {user}, you are user {num}! \n Bye {user}!".format(user="Sam", num=1390)
+print(message)
+```
+
+```{python}
+# f-strings example (Added in Python 3.6)
+
+user = "Ben"
+num = 1234
+message = f"Hi {user}, you are user {num}! \n Bye {user}!"
+print(message)
+```
+
+```{python}
+# f-strings debug example (Added in Python 3.8)
+user = "James"
+num = 1234
+
+print(f"{user=} {num=}")
+# same as f"user={user} num={num}" but less repetition
+
+# = is a format specifier, there are many others for aligning output, truncating decimals, etc.
+
+for i in range(10):
+    print(f"{i=}")
+```
+
+### Lists
+
+One of the most useful sequence types is `list`.
+
+Lists are:
+
+- **Ordered** by position, starting at 0.
+
+- **Mutable**, they can be modified in-place
+    
+- Dynamically-sized, can grow and shrink as needed.
+
+- Heterogeneous, can store mixed types. (Though we often avoid this!)
+
+```{python}
+things = []
+
+# lists can contain items of different types
+things = [123, "abc", 1.23j + 4.5]
+
+# lists can contain other lists
+meals = [["egg", "toast"], ["sandwich", "chips"], ["fish", "salad", "cake"]]
+
+print(things)
+print(meals)
+```
+
+### Tuples
+
+Tuples work very similarly to lists but are **immutable**, they cannot be changed once created.
+
+```{python}
+multi_item = (1, 2.0, "three")
+
+empty_tuple = ()
+
+one_item_tuple = (1 + 2,)  # why is the comma necessary?
+print(multi_item)
+print(empty_tuple)
+print(one_item_tuple)
+```
+
+```{python}
+bad_tuple = (1 + 492)
+print(bad_tuple, type(bad_tuple))  
+```
+
+## Sequence Operations
+
+All three of these sequence types support some useful operations:
+
+|operation | name | description |
+|------|-----|-----|
+| `len(seq)` |  Length |  gets number of items in sequence.
+| `seq1 + seq2` |  Concatenation |  to concatenate together (make a new sequence).
+| `seq * N` |  Repetition |  creates a new sequence that repeats seq, N times.
+| `item in seq` |  Containment |  tests for whether or not a given value appears in a sequence.
+| `seq[N]` |  Indexing | gets Nth value from sequence.
+| `seq[N:M]` | Sliced Indexing | returns a new sequence that is a "slice" of the original.
+
+```{python}
+# length demo
+s1 = "Hello World"
+l1 = [1, ["a", "b", "c"], 3, None, 4]
+t1 = ()
+
+print(len(s1))
+print(len(l1))
+print(len(t1))
+```
+
+```{python}
+# concatenation & repetition demo
+s2 = "*" * 5
+t2 = (True, False) * 3
+l2 = ["a", "b", "c"] * 4
+print(s2)
+print(t2)
+print(l2)
+```
+
+```{python}
+# concatenation & repetition demo
+s2 = "*" * 5
+t2 = (True, False) * 3
+l2 = ["a", "b", "c"] * 4
+print(s2, "\n", t2, "\n", l2)
+```
+
+```{python}
+cities = [
+    "Tokyo",
+    "Delhi",
+    "Shanghai",
+    "São Paulo",
+    "Mexico City",
+    "Cairo",
+    "Mumbai",
+    "Beijing",
+    "Dhaka",
+    "Osaka",
+]
+text = "Four score and seven years ago our fathers brought forth, upon this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal"
+ids = (123, 555, 81, 110, 44, 12, 16)
+
+print(cities[3])
+print(text[12])
+print(ids[0])
+```
+
+```{python}
+# containment
+print("Shanghai" in cities)
+print("Delhi" in cities)
+print(" seven " in text)
+print("7" in text)
+print(123 in ids)
+```
+
+```{python}
+# slicing
+print(cities[2:-4])
+print("hello world"[2:5])
+print(cities[8:])
+```
+
+#### Indexing / Slicing Rules
+
+`s = "Hello!"`
+
+| Letter | Index | -Index |
+|--------|-------|--------|
+|    H   |   0   |   -6   |
+|    e   |   1   |   -5   |
+|    l   |   2   |   -4   |
+|    l   |   3   |   -3   |
+|    o   |   4   |   -2   |
+|    !   |   5   |   -1   |
+
+First element is 0.
+
+Last element is -1.
+
+Slice boundaries are inclusive of first, exclude last.
+
+### mutable sequence methods
+
+(for now just `list`)
+
+| Operation   | Result | 
+|-------------|--------|
+|  `s[i] = x` | Replace element `i` in sequence with `x`. |
+|  `s.append(x)` | Add item to end of sequence. |
+|  `s.clear()`  | Remove all items from sequence. |
+|  `s.copy()`  | Create a (shallow) copy of sequence. |
+|  `s.insert(i, x)` | Insert an item `x` at position `i`. |
+|  `s.pop()` or `s.pop(i)` | Retrieve item at position `i` and remove it.  (Defaults to -1 if not provided) |
+|  `s.reverse()` | Reverse items of `s` in place. |
+
+```{python}
+# list mutation
+letters = ["A", "B", "C", "D", "E", "F", "G"]
+
+letters.append("H")
+print(letters)
+```
+
+```{python}
+letters.insert(0, "*") 
+letters.pop()
+letters.pop(4)
+print(letters)
+```
+
+```{python}
+letters.reverse()
+print(letters)
+```
+
+### common string methods
+
+String has some special methods
+
+| Method                 | Description |
+|------------------------|-------------|
+| s.find(sub)            | Finds first occurrence of substring `sub` or -1 if not found |
+| s.lower()              | Converts the string to lowercase. |
+| s.upper()              | Converts the string to uppercase. |
+| s.replace(old, new)    | Replaces occurrences of old with new. |
+| s.strip()              | Remove leading & trailing whitespace. |
+| s.startswith(prefix)   | Checks if a string starts with prefix. |
+| s.endswith(suffix)     | Checks if a string ends with suffix. |
+| s.split(sep)           | Split a string using `sep` as delimiter. |
+
+
+(Credit: Python Distilled, Table 1.6)
+
+<https://docs.python.org/3/library/stdtypes.html#string-methods>
+
+```{python}
+# string method demo
+s = "Hello world!"
+
+# find
+pos = s.find("world")
+print(pos)
+```
+
+```{python}
+print(s[pos:])
+```
+
+```{python}
+new_string = s.upper()
+
+print("s=", s)
+print("new_string=", new_string)
+```
+
+```{python}
+s.replace("world", "class")
+print(s)
+```

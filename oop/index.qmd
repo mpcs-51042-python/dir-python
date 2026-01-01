@@ -1,0 +1,550 @@
+# Object-Oriented Programming
+
+## Motivations
+
+We often find ourselves working with many functions that use the same data structure(s).
+
+Let's look at a hypothetical program that only uses the types we've learned so far in Python:
+
+```{python}
+#| tags: []
+person_a = {"name": "Andy", "costume": "Cowboy", "candy": []}
+person_b = {"name": "Gil", "costume": "Robot", "candy": []}
+person_c = {"name": "Lisa", "costume": "Ghost", "candy": []}
+
+candy_bag = ["Kit Kat", "Kit Kat", "Lollipop", "M&Ms"]
+
+def costume_is_scary(person : dict) -> bool:
+    return person["costume"] in ("Ghost", "Wolfman", "Mummy")
+
+def do_trick(person):
+    print(f"{person['name']} did a trick")
+
+def trick_or_treat(person):
+    success = give_candy(candy_bag, person)
+    # extra candy for scary costumes!
+    if costume_is_scary(person):
+        give_candy(candy_bag, person)
+    if not success:
+        do_trick(person)
+
+def give_candy(candy_bag, person):
+    if candy_bag:
+        candy = random.choice(candy_bag)
+        candy_bag.remove(candy)
+        person["candy"].append(candy)
+        return True
+    else:
+        return False
+```
+
+This is, in effect, **object-oriented code**.
+
+An "object" is a grouping of data with behavior.
+
+Purely *procedural programming* focused on using control flow & procedures (impure functions) to structure our application.
+
+We saw that *functional programming* focused on composition of smaller functions to achieve larger goals.
+
+**Object-oriented** programming focuses on groupings of data and associated behaviors.
+
+A common misconception is that a language needs classes to be object-oriented.
+While classes are the most common feature provided in OO-focused languages, one can write code without them as we saw above.
+
+## Classes & Methods
+
+The code above might be rewritten as:
+
+```{python}
+#| tags: []
+class Person:
+    def __init__(self, name, costume):
+        self.name = name
+        self.costume = costume
+        self.candy = []
+
+    def is_scary(self):
+        return self.costume in ("Ghost", "Wolfman", "Mummy")
+    
+    def do_trick(self):
+        self.tricks = True
+        print(f"{self.name} did a trick")
+        
+    def accept_candy(self, candy):
+        self.candy.append(candy)
+        
+class NoCandy(Exception):
+    pass
+
+class House:
+    def __init__(self, initial_candy):
+        self.candy = initial_candy
+    
+    def get_candy(self):
+        if not self.candy:
+            raise NoCandy("no more candy!")
+        candy = random.choice(self.candy)
+        self.candy.remove(candy)
+        return candy
+```
+    
+This code provides blueprints for what data & actions a "person" has.
+
+- **Class** - A blueprint for an object, providing methods that will act on instances of the data.
+- **Method** - A function that is tied to a specific class.
+- **Attribute** - Data that is tied to a specific instance.
+- **Constructor** - A special method that creates & populates an instance of a class.
+
+When we use the object, we create **instances** of our class, and use those as we would any other type.
+
+```{python}
+def trick_or_treat(person, house):
+    try:
+        candy = house.get_candy()
+        person.accept_candy(candy)
+        if person.is_scary():
+            person.accept_candy(house.get_candy())
+    except NoCandy:
+        do_trick(person, house)
+```
+
+```{python}
+p = Person("James", "Wolfman")
+p2 = Person("Fred", "Mummy")
+l1 = list()
+l2 = list()
+p.is_scary()
+p.accept_candy("Chocolate")
+p.candy
+```
+
+## Everything in Python is an Object
+
+We've been doing this all along! `list`, `dict`, and all the rest down to `int` and `None` are objects with their own data and methods.
+
+`isinstance` is the preferred way to check if an item is of a particular type.
+
+It can return true for multiple types, we'll see why this is the case shortly.
+
+```{python}
+#| tags: []
+isinstance([1, 2, 3], list)
+```
+
+```{python}
+isinstance([1, 2, 3], tuple)
+```
+
+```{python}
+isinstance([1, 2, 3], object)
+```
+
+```{python}
+#| tags: []
+s = set([1,2,3])
+
+# using constructors here for demo purposes, generally would use a literal (e.g. [], 0, "") for these
+ll = list()  
+ll.append(str())
+ll.append(int())
+ll.append(float())
+ll.append(s)
+ll.append(print)
+
+print(ll)
+```
+
+```{python}
+#| tags: []
+[isinstance(item, object) for item in ll]
+```
+
+Keeping this in mind can help keep things straight when we delve deeper into making our own objects.
+
+Let's revisit a few things that we already know:
+
+- each `list` is independent of all others, when you create a new via `list()` (or `[]`) that is an **instance**
+- calling things like `.append` operate on the instance they are called from. 
+- Some methods modify the underlying object (`.append`) while others just provide a return value like any other function.  (What are some non-modifying methods?)
+
+## Classes in Python
+
+### Instances, Classes, and Instantiation
+
+We often use the blueprint analogy for a class, a class tells us *how an object will act*, but on its own doesn't do anything until instantiated.
+
+The blueprint can specify features that vary from car to car (color, transmission type, etc.) and behavior that is common among all cars.
+
+We can create multiple car **instances** with different values for a given attribute.
+
+```{python}
+class Car:
+    # __init__ is a special method
+    # known as a double-underscore or dunder method
+    #  in Python it represents our constructor
+
+    def __init__(self, make, model, year=2000):
+        #print(type(self))
+        self.make = make
+        self.model = model
+        self.year = year
+        self.mileage = 0
+        self.hybrid = False
+        
+# to actually create Cars, we need to call this constructor
+car1 = Car("Honda", "Civic", 2019)
+car2 = Car("Chevy", "Volt", 2022)
+print(car1.make, car1.model, car1.year)
+print(car2.make, car2.model, car2.year)
+car3 = car2
+```
+
+```{python}
+car3 is car2
+```
+
+```{python}
+car2.year += 1
+```
+
+```{python}
+print(car3.year)
+```
+
+This is known as *instantiation*, making an instance of the class.
+
+### `self` & methods
+
+The first parameter of methods is always `self`.  
+
+This parameter is never passed directly, but is a local reference to the object the instance is being called upon.
+
+```{python}
+#| tags: []
+class Car:
+    def __init__(self, make, model, year):
+        self.make = make
+        self.model = model
+        self.year = year
+        self.mileage = 0
+        self.hybrid = False
+        self.driver = None
+        
+    def print_report(self):
+        print(f"{self.year} {self.make} {self.model} with {self.mileage} miles")
+        
+    def drive(self, miles):
+        self.mileage += miles
+        
+car1 = Car("Honda", "Civic", 2019)
+car2 = Car("Chevy", "Volt", 2022)
+car2.mileage
+```
+
+```{python}
+#| tags: []
+car1.print_report()
+```
+
+```{python}
+#| tags: []
+car2.drive(500)
+print(car2.mileage)
+car2.print_report()
+```
+
+```{python}
+#| tags: []
+car1.print_report()
+```
+
+```{python}
+#| tags: []
+print(car1.mileage)
+```
+
+Because of `self`, methods can know which instance they are operating upon.
+
+#### How does this work?
+
+This is confusing at first glance, where does `self` come from? 
+
+It is actually the "parameter before the dot".
+
+```{python}
+# explicitly call Car.print_report and pass self
+Car.print_report(car2)
+
+# this works, but is not how we call class methods!
+# instead write as car2.print_report()
+```
+
+```{python}
+# this is true of all types
+ll = []
+ll.append(3)
+list.append(ll, 4) # list is class, ll is self here
+ll
+```
+
+### What happens if `self` is omitted?
+
+```{python}
+
+class Mistake:
+    def __init__(self):
+        print("constructor!")
+    
+    def method_no_self():
+        print("method!")
+
+try:
+    m = Mistake()
+    m.method_no_self()
+    # rewritten as Mistake.method_no_self(m)
+except Exception as e:
+    print(repr(e))
+```
+
+### Attributes
+
+Attributes in Python are created on assignment, like other variables.
+
+`self.name = value`
+
+Typically they will be assigned in the *constructor*, but not explicitly required.
+
+**Why is it a good idea to always do this?**
+
+
+By default, all attributes are accessible from inside the class and outside:
+
+  - `self.name` from inside.
+  - `instance_name.name` from outside.
+  
+**Best practice: create all attributes inside constructor!**
+
+Why?
+
+```{python}
+#| tags: []
+my_car = Car("DMC", "DeLorean", 1982)
+my_car.driver_name = "Marty" # allowed, but to be avoided
+my_car.whatever_i_want = [1, 2, 3]
+```
+
+```{python}
+print(my_car.driver)
+```
+
+### Exception to the rule: function objects
+
+Functions are objects, and can have attributes assigned to them as well.
+
+We sometimes do this since there's no opportunity to assign them before. (Because functions do not have constructors we can modify.)
+
+```{python}
+#| tags: []
+def f():
+    print(f"called f()")
+    #f.call_count = 0 # NO
+f.call_count = 0
+```
+
+```{python}
+#| tags: []
+f.call_count += 1
+f()
+print(f.call_count)
+```
+
+```{python}
+#| tags: []
+# using a decorator to add call_count to any function
+def counter(func):
+    #inner.call_count
+    def inner(*args, **kwargs):
+        inner.call_count += 1
+        print(f"call count {inner.call_count}")
+        return func(*args, **kwargs)
+    inner.call_count = 0
+    return inner
+```
+
+```{python}
+#| tags: []
+@counter
+def f():
+    print("called f()")
+```
+
+```{python}
+#| tags: []
+@counter
+def g():
+    print(f"called g()")
+```
+
+```{python}
+#| tags: []
+f()
+f()
+f()
+```
+
+```{python}
+#| tags: []
+g()
+```
+
+## Protocols, Duck-Typing, and Polymorphism
+
+In some languages, functions can be created with one name but different argument lists.
+
+```c++
+// C++
+void foo(int x)
+void foo(double x)
+void foo(int x, double y)
+```
+
+The compiler can decide which function to call at compile time based on the types given.
+
+This is called polymorphism, **the specific implementation of an operation depends on the objects being operated on**.
+
+The `+` operator exhibits polymorphism in Python:
+
+```python
+1 + 5  # addition
+"1" + "5" # string concatenation
+[1,2,3] + [4,5] # list concatenation
+```
+
+Remember, we mentioned that everything in Python is an `object` and `object`s have operations associated with them. 
+
+
+```python
+def times(x, y):
+     return x * y
+```
+
+As long as our objects `x` and `y` support the `*` protocol, it is safe to call `times(x, y)`.
+
+In Python, instead of forcing our arguments to be specific types, we use something known as **duck typing**.
+
+>   "If it looks like a duck, and it quacks like a duck, it might as well be a duck."
+
+If we had a function:
+
+```python
+def do_something(a, b):
+    a.append(b[0])
+```
+
+We can pass any type for `a` that has an `append`, and any type for `b` that has a way to call it with `[0]`.
+
+### Protocols & Dunder Methods
+
+Another way of thinking about this is that objects of a given type follow a certain protocol.
+
+- iterable
+- callable
+- addable
+- comparable
+
+In the above example, while we could add the `.append` method, if we want to make our own types that are *comparable*, *iterable*, etc. we need to use **dunder methods**.
+
+**dunder** or **double-underscore** methods are specially-named methods that are called when specific syntax is used.
+
+For example, to be "addable" an object needs a `__add__` method, to be comparable it needs `__eq__` and `__lt__` or `__gt__` at least. (We'll see more of these later.)
+
+For now, let's look at a few of these:
+
+* `__repr__`
+* `__str__`
+* `__eq__`
+
+```{python}
+class Car: 
+    def __init__(self, make, model, year):
+        self._make = make 
+        self._model = model 
+        self._year = year
+        self.__mileage = 0
+
+    def drive(self, miles):
+        if miles > 0:
+            self.__mileage += miles
+        else:
+            ...
+       
+    def __eq__(self, other):
+        # we can decide equality does/doesn't include mileage
+        return (self._make == other._make 
+                and self._model == other._model 
+                and self._year == other._year)
+    
+    def __repr__(self):
+        return f"repr Car({self._make}, {self._model}, {self._year}, mileage={self.__mileage})"
+
+    def __str__(self):
+        return f"str {self._year} {self._make} {self._model} with {self.__mileage} miles"
+
+    # common to only define __repr__, then add 
+    # __str__ = __repr__
+```
+
+```{python}
+truck = Car("Ford", "F-150", 1985)
+truck2 = Car("Ford", "F-150", 1985)
+```
+
+```{python}
+# stating a variable name in the REPL will show the `repr`
+truck
+```
+
+```{python}
+# printing a variable will call the `str`
+print(truck)
+```
+
+```{python}
+# we can also cast using `str()`
+var = str(truck)
+var
+```
+
+```{python}
+# calls __eq__
+truck == truck2 
+```
+
+```{python}
+# truck == truck2, rewritten as 
+truck.__eq__(truck2)
+```
+
+### `str` vs `repr`
+
+`repr` is supposed to be a programmatic interpretation, used in debugging output. In jupyter/ipython if a function returns a value we see the repr by default.
+
+`str` is used when print is called, or an explicit conversion to string as shown above.
+
+If only `__repr__` is defined, then `str(obj)` will use `__repr__`, so if you don't have a need for them to differ, then define `__repr__` and add `__str__ = __repr__`.
+
+
+## Discussion
+
+- What else is iterable?
+- What are other protocols we've seen?
+- Do all iterables eventually raise `StopIteration`?
+- What dunder methods are being called by:
+
+```python
+f(x[0] + y["test"])
+```
+
+<!--
+f.__call__(x.__getitem__(0).__add__(y.__getitem__("test")))
+-->

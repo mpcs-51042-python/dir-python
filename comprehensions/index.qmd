@@ -1,0 +1,167 @@
+# Comprehensions
+
+*Comprehensions* are a special kind of *expression* in Python that perform significant work within a `list`, `dict`, `set` literal.
+
+It is common to have code that converts one iterable to a new iterable, often building one element at a time:
+
+```python
+some_iterable = [1, 2, 4, 8, 9, 12]
+new_iterable = []
+for i in some_iterable:
+    if some_cond:
+        new_iterable.append(some_func(i))
+return new_iterable
+```
+
+Comprehensions allow us to reduce the above to a single line. Additionally, they can be much more efficient than building a list, dict, or set one element at a time. 
+**assuming we want to use the new_iterable**.
+
+This is not true if you are just trying to iterate: if you just want to do work in a `for` loop, continue to use a for loop as you have been!
+
+## List Comprehensions
+
+Create a new list from another iterable.
+
+Remember that we can take any iterable and convert it to a list by calling `list()`:
+
+```{python}
+s = "hello world"
+list(s)
+```
+
+The simplest list comprehension does the same thing (you should prefer `list` if this is all you are doing):
+
+```{python}
+t = (1, 2, 3, 4, 5)
+[i for i in t]
+```
+
+This looks a bit like an inside-out for loop:
+
+```python
+# basic list comprehension syntax
+new_list = [expression for var in iterable]
+```
+
+The `for var in iterable` portion declares a new temporary variable for iteration, just like a traditional for loop, but
+The benefit comes in when we start modifying the expression portion:
+
+```{python}
+[i**2 for i in t]
+```
+
+```{python}
+[c.upper() for c in s]
+```
+
+These list comprehensions *map* values from the original iterable to new values, the same as `map`!
+
+But they do not need to be one-to-one, we can remove some items conditionally with one more optional clause:
+
+```python
+# full list comprehension syntax with optional if clause
+new_list = [expression for var in iterable if condition]
+```
+
+```{python}
+def isvowel(c):
+    return c in "aeiou"
+
+[c.upper() for c in s if isvowel(c)]
+# or [c.upper() for c in s if c in "aeiou"]
+```
+
+This can replace `filter`!
+
+### Nested Comprehensions
+
+Since comprehensions are expressions, and the first clause needs to be an expression, we can nest comprehensions:
+
+```{python}
+# possible to nest comprehensions, but beware readability
+faces = ("K", "Q", "J")
+suits = ("♠", "♣", "♦", "♥")
+[(face + suit) for face in faces for suit in suits if face != "K"]
+```
+
+## Set & Dict Comprehensions
+
+It is also possible to make `set` and `dict` comprehensions by using `{}`.
+
+```{python}
+# powers of two set
+{2 ** n for n in [1,1,2,2,3,3,3,4,4,4]}
+```
+
+```{python}
+# powers of two mapping
+{n+2: n+1 for n in range(5) if n > 0}
+```
+
+If the expression contains a `:` (colon), result is a dictionary.
+
+
+## Thinking in List Comprehensions
+
+Here is a way of thinking about list comprehensions that may help you write more complex comprehensions in a natural way:
+
+
+```{python}
+def make_powers_lc(n, inputs):
+    """
+    Given list of inputs, return each input raised to the 1st-Nth power
+    
+    e.g.
+    >>> make_powers_lc(4, range(10))
+    [[0, 0, 0, 0],
+     [1, 1, 1, 1],
+     [2, 4, 8, 16],
+     [3, 9, 27, 81],
+     [4, 16, 64, 256],
+     [5, 25, 125, 625],
+     [6, 36, 216, 1296],
+     [7, 49, 343, 2401],
+     [8, 64, 512, 4096],
+     [9, 81, 729, 6561]]
+    """
+```
+
+
+```{python}
+# 1) start with shape: 
+# Output will be a list of list of ints, 
+# so create simplest version of that
+def make_powers_lc(n, inputs):
+    return [[1]]
+make_powers_lc(4, range(10))
+```
+
+```{python}
+# 2) expand outer list comprehension to have correct number of elements
+# using inputs as foundation, we haven't modified the first term yet
+def make_powers_lc(n, inputs):
+    return [[1] for x in inputs]
+make_powers_lc(4, range(10))
+```
+
+```{python}
+# 3) Now expand inner list to have correct number of elements.
+def make_powers_lc(n, inputs):
+    return [[1 for y in range(n)] for x in inputs]
+make_powers_lc(4, range(10))
+```
+
+```{python}
+# 4) Fix initial term to do calculation
+def make_powers_lc(n, inputs):
+    return [[x**y for y in range(n)] for x in inputs]
+make_powers_lc(4, range(10))
+```
+
+```{python}
+# 5) With correct shape, make modifications to ranges/etc. as needed
+def make_powers_lc(n, inputs):
+    return [[x**y for y in range(1, n+1)] for x in inputs]
+make_powers_lc(4, range(10))
+```
+

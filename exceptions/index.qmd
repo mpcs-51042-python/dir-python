@@ -1,0 +1,411 @@
+# Exceptions
+<!-- on loan from PDM, but maybe it belongs here -->
+
+---
+
+**Goals**
+
+- Understand why we use exceptions.
+- Explore Python's exception handling syntax.
+
+---
+
+## Error Handling
+
+No matter how good your code is, there's always going to be a chance that something goes wrong.
+
+```{python}
+
+def my_func(a, b):
+    """ what can go wrong with this function? """
+    if a > b:
+        return a / b
+    else:
+        return a * c
+```
+
+::: {.callout-note collapse="true"}
+## Error One
+```{python}
+
+try:
+    my_func(3, 0)
+except Exception as e:
+    print(repr(e))
+```
+:::
+
+::: {.callout-note collapse="true"}
+## Error Two
+```{python}
+
+try:
+    my_func(10, 12)
+except Exception as e:
+    print(repr(e))
+```
+:::
+
+
+::: {.callout-note collapse="true"}
+## Error Three
+```{python}
+
+try:
+    my_func("two", "three")
+except Exception as e:
+    print(repr(e))
+```
+:::
+
+
+If we were to try to handle all errors, we'd need to return some error value, perhaps `None`.
+
+```python
+def my_func(a, b):
+  # make sure both variables are numeric
+  if not isinstance(a, (int, float, complex)):
+      return None
+  if not isinstance(b, (int, float, complex)):
+      return None
+    if a > b:
+        if b == 0:
+            return None   # can't divide by zero
+        return a / b
+    else:
+        return a * b
+```
+
+But this has issues of it's own: 
+
+- The function is significantly harder to read, now half the code is dedicated to error handling.
+- There are other numeric types, such as `fraction.Fraction`, the function is now artificially constrained to only work with those that the author considered.
+- By returning `None` we get no information about what happened. This would make debugging harder if we found a `None` result later in our program.
+- Now code using this function will always need to check if it got a numeric value or `None` on result.
+
+Code winds up littered with:
+
+```python
+q = my_func(r, s)
+if q is not None:
+  ... # good path
+else:
+  ... # error path
+  
+```
+
+Some languages, like C, do not have exceptions, and as a result correct C code is commonly filled with checks like the above examples.
+
+## Exceptions
+
+In Python we have **exceptions**, which allow us to write our code *assuming that things went well*.
+This means we can generally call functions and use their return values without checking for an error result between each step.
+
+This makes it possible to write concise code:
+
+```python
+url = get_url()
+resp = httpx.get(url)
+root = lxml.html.fromstring(resp.text)
+
+# or even as a single line
+root = lxml.html.fromstring(httpx.get(get_url()).text)
+```
+
+Most of the time, that code should work as intended, but errors might occur:
+
+- `get_url()` might have a bug and return `None` or an invalid URL.
+- The server might be down, so `httpx.get` encounters a timeout.
+- `lxml.html.fromstring` might not be able to parse the HTML.
+
+Instead of a long potentially complex series `if/else` statements, we can write the code assuming things will go well.
+If something *exceptional* happens, the functions will *raise an exception*.
+
+If we write nothing else, any exception will force the program to exit.
+Often that's the desired behavior. For example, if the program depends on a website being up, exiting if the server is unavailable is a reasonable choice.
+
+Sometimes however, there might be some code that we'd like to run when something exceptional happens.
+
+Some examples:
+
+- some errors are *recoverable*, perhaps the site was down momentarily and we can retry after a short wait
+- save/close open files so no work is lost before exiting
+- or perhaps just printing a user-friendly error message before exiting
+
+Exceptions are very useful in Python, so sometimes we may even use them for non-error conditions, just to handle a less-common case.
+
+
+## Handling Exceptions
+
+We surround the "risky" code with a `try/except` statement.
+
+```python
+try:
+    might_encounter_error()
+    maybe_works()
+except (ValueError, KeyError) as exc:
+    handle_error(exc)
+
+then_this()
+```
+
+If either of the lines of code within the `try` portion produce an exception, Python will check the type against the `except` statement.
+
+**If the type matches any of the listed types**, it will assign the exception to `exc`, then run the block under the matching `except`.
+   (The variable name is your choice, common names are `e`, `err`, `exc`).
+
+**If no exception is raised**, the next line of code to execute would be after the `except` block, the function `then_this()`.
+
+### Multiple Exception Types
+
+If you are only handling a single type you would use `except ExceptionType`.
+If you are handling multiple exceptions you can combine them in a tuple if you want the same code to handle multiple types, as we saw above.
+
+Sometimes however, you may want to handle different exceptions differently:
+
+```python
+try:
+    response = httpx.get('http://example.com')
+    response.raise_for_status()
+    print(f"Success! Status code: {response.status_code}")
+except (httpx.RequestError, httpx.TimeoutException) as e:
+    # Handles network-related errors (DNS failures, connection errors, etc.)
+    #  as well as timeouts.
+    print(f"Server error occurred: {e}")
+except httpx.HTTPStatusError as e:
+    # Handles HTTP status errors (4xx, 5xx responses)
+    print(f"HTTP error occurred: {e}")
+```
+
+Here we use multiple `except` statements to execute different code depending on the kind of error encountered.
+Like `elif` statements, only the first `except` to match will be executed.
+
+This means that when the server is down, we can retry after some time.
+However, if the error is that the password is invalid there's no benefit in retrying with the same data.
+
+### try-except-else-finally
+
+A `try/except` may have:
+
+- one `try` block
+- as many `except` blocks as desired
+- an optional `else`
+- an optional `finally`
+
+The `else` statement only executes if no exception is raised. (Somewhat akin to the `else` executing if no `elif` runs.)
+
+`finally` is unique to exception handling. It executes **no matter what**, after any other blocks are evaluated.
+
+```python
+try:
+    something()
+except ValueError as e:
+    ...   # executes only if ValueError was raised
+except (IndexError, KeyError) as e:
+    ...   # executes only if IndexError or KeyError was raised
+else:
+    ...   # executes if no exception raised
+finally:
+    ...   # executes after try/except/else no matter what
+```
+
+## Raising Exceptions
+
+If *your code* encounters a condition that it cannot handle, you can `raise` an exception.
+
+To raise an exception, you use the `raise` keyword, which similarly to `return` exits a function immediately.
+
+```{python}
+def f(positive):
+    if positive < 0:
+        raise ValueError("f requires a positive argument")
+    return positive * positive
+```
+
+```{python}
+f(3)
+```
+
+```{python}
+try:
+    y = f(-1)
+except ValueError as exc:
+    y = 0
+    print("got an error: ", exc)
+print("y=", y)
+```
+
+### Propagation
+
+Exceptions **propagate** unless caught, you've encountered this in your own code:
+
+
+```{python}
+def inner():
+    raise Exception("example")
+
+def middle():
+    inner()
+
+def outer():
+    middle()
+
+try:
+    outer()
+except Exception as e:
+    # this code being used for this example to show
+    # stack output in notebook
+    print("Uncaught: ", repr(e))
+    import traceback
+    print(traceback.format_exc())
+```
+
+This is sometimes called "bubbling up", the uncaught exception *pops functions off the call stack*, exiting them in LIFO "last-in-first-out" order.
+
+A `try/except` may catch the exception at any level. If the exception is caught within `middle` for instance, execution will resume in that function's `except` block.
+
+```{python}
+def inner():
+    raise Exception("example")
+
+def middle():
+    try:
+       inner()
+    except Exception:
+       print("caught in the middle, stops propagation")
+
+def outer():
+    middle()
+
+try:
+    outer()
+except Exception as e:
+    # this code being used for this example to show
+    # stack output in notebook
+    print("Uncaught: ", repr(e))
+    import traceback
+    print(traceback.format_exc())
+```
+
+### re-raising 
+
+While an `except` usually stops propagation, sometimes you want to handle an exception and then still allow it to propagate/end the program.
+
+```{python}
+
+def risky_code():
+    print("running risky code...")
+    raise Exception("!")
+
+def save_data():
+    print("saving data!")
+
+def main():
+    try:
+        risky_code()
+    except Exception as e:
+        print(f"Handling Error: {e}")
+        raise
+    finally:
+        save_data()
+
+
+try:
+    main()
+except Exception as e:
+    # this code being used for this example to show
+    # stack output in notebook
+    print("Uncaught: ", repr(e))
+    import traceback
+    print(traceback.format_exc())
+```
+
+This example runs the function `risky_code`, and if an error occurs will print the error message
+
+## Exception Types
+
+Exceptions in Python form a hierarchy.
+
+The exceptions you're used to seeing inherit from `Exception`:
+
+* `Exception` (base type)
+  * `ValueError`
+  * `TypeError`
+  * `KeyError`
+  * `IndexError`
+  * `NotImplementedError`
+  * `OSError`
+      * `FileNotFoundError`
+
+The [Python exception documentation](https://docs.python.org/3/library/exceptions.html#exception-hierarchy) contains the full hierarchy.
+
+An `except OSError` will also catch `FileNotFoundError` since the second is a child of the first.
+
+This means that if you catch `Exception` almost all of the common exceptions.
+
+
+::: {.callout-warning}
+## except Exception & bare except:
+
+`except Exception` is **usually a bug**.
+Rarely do you want to handle all exceptions in the same manner.
+
+One time that it would be acceptable to do this would be to print a human readable error message.
+You can catch `Exception` in your `main` function and print a more useful error message.
+
+Though not shown in any of the examples on this page, `except:` without any exception at all is also valid syntax.
+This will catch *all exceptions*, not just those that are children of `Exception`.
+
+This is an even worse idea, and the general advice is to **never use this**.
+It will include special exceptions like `SystemExit` which are raised when someone tries to quit your program.
+This means that programs that catch `except:` can appear to be stuck.
+
+:::
+
+### Defining Custom Exception Types
+
+Sometimes a built-in exception type is a natural fit, if you are writing a dictionary-like object you would probably use `KeyError` if an invalid key is accessed.
+
+Most of the time, it is a good idea to define your own exception type, or types.
+
+Custom exception types let you handle your own errors differently from Python's built in types:
+
+```python
+class InvalidColor(Exception):
+    """ This exception is raised when an invalid color is passed. """
+    pass
+
+VALID_COLORS = (...)
+
+def draw_point(x, y, color):
+    if color not in VALID_COLORS:
+        raise InvalidColor("color should be one of the valid colors")
+```
+
+Exception classes must inherit from `Exception` or another exception.
+This will define their place in the exception hierarchy.
+
+If you're unfamiliar with inheritance at this point, this refers to the `(Exception)` portion of the above declaration.
+
+## Best Practices
+
+When a programmer first encounters `except` it may feel tempting to just catch every error.
+Doing so doesn't magically make your code work, it just hides errors and makes debugging impossible.
+
+Instead, you want to keep exception handling to cases that your code intends to *handle*, not use `except` to *ignore* errors.
+
+Best practices are to keep error handling *as narrow as possible*:
+
+* Try to keep your `try` blocks as small as possible, only including the code that might raise an exception.
+* Catch the most specific exception possible, and only catch exceptions that you can handle.
+* `raise` the most specific exception that you can, `DivisionByZeroError` tells you more than `ArithmeticError`.
+  * Create & use custom exception types liberally!
+* Always avoid catching `Exception`, or omitting the exception type entirely. 
+* Provide useful messages to augment common exception types, for example `raise ValueError("say why the value was rejected")`.
+
+
+## Further Exploration
+
+* [Python Docs - Errors and Exceptions](https://docs.python.org/3/tutorial/errors.html)
+* [Python Docs - Context Managers](https://docs.python.org/3/reference/datamodel.html#context-managers)
+* [Python Docs - with Statement](https://docs.python.org/3/reference/compound_stmts.html#the-with-statement)

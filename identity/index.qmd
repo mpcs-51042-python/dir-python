@@ -1,0 +1,264 @@
+---
+title: Identity & References
+jupyter: python3
+---
+
+Now that we've seen all of the built-in types we can take a second look
+at mutability and explore what Python is doing under the hood, so that we are less likely to be surprised by the behavior.
+
+## Names & Mutability Revisited
+
+Remember that when we do an assignment, we are associating a **name** with an **object**, a value in memory.
+
+It is the object that has a **type**, not the name.
+
+```python
+# a name is bound to the result of the expression
+x = 1 + 1
+# the name is re-assigned, we aren't changing data
+x = x + 1
+# this is why we can re-assign to a different type
+x = "hello"
+```
+
+#### Immutable Types
+
+ - `str`
+ - `tuple`
+ - `frozenset`
+ - scalars: `int`, `float`, `complex`, `bool`, `None`
+
+For immutable types, this is the only option, any changes require *reassignment*.
+
+#### Mutable Types
+
+- `list`
+- `dict`
+- `set`
+
+On the other hand, mutable values can be changed **in place**.
+
+```python
+x = [1, 2, 3]
+x.append(4)  # no re-assignment needed!
+print(x)
+```
+
+### Object
+
+All types in Python share an internal representation as an **object** (`PyObject` in C).
+
+```python
+ll = [1, 2, 3, 4]
+yy = ll           # increase ref count
+```
+
+**object**
+
+| Field | Example | Purpose |
+|-|-|-|
+| id | 393239323 | uniquely identify object within Python interpreter |
+| refcount | 2 | count how many names currently point to this object |
+| type | `list` | type of object |
+| data | 0x80000000 | memory address where the *actual* data is stored |
+| length | 4 | Only present on collection types, stores pre-computed length. |
+
+Notice that name is not stored on the **object**! Why not?
+
+## Shared references
+
+Multiple names can refer to the same object in memory, this is noticable when the objects in question are mutable.
+
+```{python}
+x = [1, 2, 3]
+y = x
+y.append(4)
+print(f"{y=}")
+# spooky action at a distance
+print(f"{x=}")
+```
+
+For immutables, any change causes reassignment:
+
+```{python}
+a = 3
+b = a
+a *= 2         # reassignment!
+print(f"{a=} {b=}")
+```
+
+## Garbage Collection
+
+Python is a garbage collected language.  
+
+We don't free our own memory, Python does instead.
+
+Behind the scenes, Python stores a reference counter on each `object`.  How many names/objects reference the object.
+
+When reference count drops to zero, Python can reclaim the memory.
+
+## Identity
+
+The built-in `id(...)` function returns the identity of an object, which is an integer value guaranteed to be unique and constant for lifetime of object
+
+In the official ("CPython") Interpreter we are using in this class, it is the address of the memory location storing the object.
+
+```{python}
+x = "Orange" 
+print(id(x))  # Unique integer-value for the object pointed by x
+```
+
+```{python}
+y = "Apple" 
+print(id(y)) 
+```
+
+```{python}
+fruit1 = ("Apples", 4)
+fruit2 = ("Apples", 4)
+fruit3 = fruit2
+print(f"Fruit1 id = {id(fruit1)} \n Fruit2 id = {id(fruit2)}")
+print(f"Fruit3 id= {id(fruit3)}")
+```
+
+```{python}
+fruit1 is fruit2
+```
+
+#### Equality vs. Identity
+
+Two different ways of testing if objects are the "same":
+
+- Equality operator (`==`): Returns true if two objects are equal (i.e., have the same value)
+- Identity operator (`is`): Returns true if two objects identities are the same.
+
+`a is b` means `id(a) == id(b)`
+
+```{python}
+#| slideshow: {slide_type: subslide}
+a = [1, 2, 3]
+b = [1, 2, 3]
+print("a == b", a == b)
+
+print(id(a))
+print(id(b))
+print("a is b", a is b)  # The id values are different
+```
+
+```{python}
+print(id(None))
+```
+
+```{python}
+def f():
+    pass
+id(f())
+```
+
+#### `is None`
+
+If you ever need to check if a value is `None`, you'd use `is None` or `is not None`
+
+### list / string mutability revisited
+
+```{python}
+# list d
+d = [1, 2, 3]
+print(id(d))
+d.append(4)
+print(d)
+print(id(d))
+```
+
+```{python}
+# str D
+s = "Hello"
+print(id(s))
+s += " World"
+print(s)
+
+# did s change?
+print(id(s))
+```
+
+### Aside: Object Creation Quirk
+
+>  Each time you generate a new value in your script by running an expression, Python creates a new object (i.e., a chunk of memory) to represent that value.
+>    
+> -- Learning Python 2013
+
+Not quite! CPython does not guarantee this, and in fact sometimes caches & reuses immutable objects for efficiency.
+
+
+```{python}
+a = 100000000
+b = 100000000
+
+# Two different objects, two different ids.
+print(a is b)
+```
+
+```{python}
+a = 100
+b = 100
+
+# However, for small integer objects, CPython caches them
+# this means that a and b point to the same object
+print(a is b)
+```
+
+```{python}
+# CPython does the same for short strings
+str1 = "MPCS"
+str2 = "MPCS"
+print(id(str1), id(str2))
+str1 is str2
+```
+
+In practice this is just a quirk of the CPython interpreter, since the objects are immutable it isn't important to know that they share memory in some cases.
+
+## copy & deepcopy
+
+If `y = x` does not make a copy, how can we get one?
+
+We've seen the `.copy()` method on a few of our types.  Which ones?
+
+We can also use the `copy` module:
+
+```{python}
+x = [1, 2, 3]
+y = x.copy()
+
+print(id(x))
+print(id(y))
+
+x.append(4)
+print(x, y)
+```
+
+```{python}
+#| slideshow: {slide_type: subslide}
+# shallow copy example (nested mutables are not copied)
+
+x = [[1, 2], [3, 4]]
+y = x.copy()  # or copy.copy(x)
+
+print("x is y", x is y)
+print("x[0] is y[0]", x[0] is y[0])
+print("x[1] is y[1]", x[1] is y[1])
+
+# print(x, y)
+x[0].append(5)
+print(x, "\n", y)
+```
+
+```{python}
+#| slideshow: {slide_type: fragment}
+# deep copy (nested mutables are copied)
+import copy
+
+# copy.copy(obj) --> same as obj.copy()
+z = copy.deepcopy(x)
+print("x[0] is z[0]", x[0] is z[0])
+```
+

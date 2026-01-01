@@ -1,0 +1,423 @@
+# Inheritance
+
+## Motivations
+
+Let's say we're building an application that tracks students.
+
+
+```{python}
+class Student:
+
+    # this is a class-level variable
+    # instead of each instance having its own copy
+    # the variable is shared among all `Student`
+    next_id_counter = 1
+    
+    def __init__(self, name):
+        # assign each student a unique id
+        # note use of Student. not self.
+        self.id = Student.next_id_counter
+        Student.next_id_counter += 1
+        
+        self.name = name
+        self.year = 1
+        self.major = "Undeclared"
+        self.course_grades = {}
+        self.extracurriculars = []
+        
+    def add_grade(self, course_name, grade):
+        self.course_grades[course_name] = grade
+    
+    @property
+    def gpa(self):
+        grade_pts = {"A":4.0, "A-":3.7, "B+":3.3, "B":3.0, "B-":2.7, "C+":2.3, "C":2.0, "C-":1.7, "D+":1.3, "D":1.0, "F":0.0} 
+        if len(self.course_grades) == 0:
+            return 0
+        return sum(grade_pts[g] for g in self.course_grades.values()) / len(self.course_grades)
+    
+    def __repr__(self):
+        return f"Student(name={self.name}, id={self.id}, gpa={self.gpa})"
+```
+
+```{python}
+#| tags: []
+s1 = Student("Adam")
+s2 = Student("Beth")
+s2.add_grade("Programming Python", "A")
+s2.add_grade("Discrete Math", "B+")
+```
+
+```{python}
+#| tags: []
+print(s1)
+print(s2)
+```
+
+Perhaps we want to add `Alumni` to our application.
+
+An alum will have some things in common with students:
+
+- They still have a name.
+- We want to remember their major.
+- We'll still want to keep track of their grades/GPA.
+
+We now also:
+
+- Want to record their year of graduation.
+- No longer want to allow grades to be recorded.
+- Want to be able to calculate how long ago they graduated.
+- When displaying them, we want to display their graduation year.
+
+**How to implement?**
+
+We *could* copy `student.py` and rename to `alum.py` and rename the class as needed.
+
+**But copying & pasting is generally a bad idea!**
+
+We'd need to fix bugs & add features in both classes separately.
+
+A new feature in `Student` would need to be copied over to `Alum`, this will quickly get messy.
+
+## Inheritance in Python
+
+Instead we will use **inheritance**, which allows us to create a new class from an existing one.  The new class inherits the attributes and methods from the parent.
+
+- **superclass**, **parent**, or **base** class: The pre-existing class.
+- **subclass**, **child**, or **derived** class: The new class that inherits the code (attributes & methods) of another class.
+
+Subclasses can extend/modify the functionality of superclasses.
+
+Syntax:
+
+```python
+class Subclass(Superclass):
+    pass
+```
+
+For example:
+
+```python
+class Alum(Student):
+    pass
+```
+
+At this point, `Alum` is a new class with the exact same implementation as `Student`.
+
+Typically we'll want to add new instance & class variables, methods, etc.
+
+Newly defined features will only apply to instances of `Alum`
+
+It is possible to override parent class behavior, or rely on parent behavior, whichever is needed.
+
+### Adding & Overriding Behavior
+
+```{python}
+#| tags: []
+class Alum(Student):
+    def __init__(self, name, grad_year):
+        # call Student's constructor, which contains id logic
+        super().__init__(name)
+        self.graduation_year = grad_year
+        
+    # new behavior
+    def years_since_graduation(self, now):
+        return now - self.graduation_year
+    
+    # overrides parent's add_grade
+    def add_grade(self, course_name, grade):
+        raise NotImplementedError("cannot add grades to Alum")
+        #print("Sorry, you cannot add grades to Alums")
+        # we choose not call super().add_grade here
+    
+    # overrides parent's __repr__
+    def __repr__(self):
+        #return f"Alum(name={self.name}, id={self.id}, gpa={self.gpa}, graduated={self.graduation_year})"
+        string = super().__repr__()
+        string += " is an alum"
+        return string
+```
+
+```{python}
+alum1 = Alum("Charlie", 2016)
+print(alum1)
+print(alum1.years_since_graduation(2022), "years since graduation")
+#alum1.add_grade("Python", "B")
+alum1.gpa
+```
+
+```{python}
+alum2 = Alum("Charlie", 2016)
+```
+
+### super()
+
+Allows direct access to parent class(es).
+
+Many different ways to be called, but for our purposes we will stick to `super().method_name()` to access parent implementation of `method_name()`
+
+### issubclass & isinstance
+
+- `isinstance(object, class_type)` - Check if an object is of an instance.
+- `issubclass(class_type, class_type2)` - Check if a type is a subclass of another type.
+
+```{python}
+isinstance(7, int)
+```
+
+```{python}
+# same as?
+type(7) == int
+```
+
+```{python}
+type(7) == object
+```
+
+```{python}
+isinstance(7,  object)
+```
+
+```{python}
+# isinstance checks the inheritance hierarchy 
+isinstance(alum2, object)
+```
+
+```{python}
+type(alum2) == Student
+```
+
+```{python}
+isinstance([1, 2, 3], list)
+```
+
+```{python}
+s1 = Student("Sarah")
+isinstance(s1, Student)
+```
+
+```{python}
+# child classes are instances of parent types
+alum1 = Alum("Charlie", 2016)
+isinstance(alum1, Student)
+```
+
+```{python}
+# but not vice-versa
+isinstance(s1, Alum)
+```
+
+```python
+# INCORRECT: issubclass takes class names, not instances
+issubclass(alum1, Student)
+
+# Instead
+issubclass(Alum, Student)
+```
+
+### `object`
+
+Every object derives from a base class named `object`.
+
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = y
+
+# Same as: 
+
+class Point(object):
+    def __init__(self, x, y):
+        self.x = y
+        self.y = y
+```
+
+### MRO
+
+When we call a function, Python walks up the chain of parent classes to determine the first one that has the method defined.
+
+This is called the **method resolution order**.
+
+```{python}
+help(Alum)
+```
+
+```{python}
+Alum.__mro__
+```
+
+```{python}
+help(super)
+```
+
+## Abstract Base Classes
+
+Sometimes we want to define a class that can't be instantiated directly, but is intended to be inherited from.
+
+These are known as **abstract classes**.  This helps us define an interface, which contains a collection of methods that the **concrete class** must implement.
+
+
+```{python}
+def print_dot_prod(v1, v2):
+    """ prints dot product between two vectors """
+    print(v1.dot_product(v2))
+```
+
+If we want this  method to be polymorphic for vectors of multiple dimensions, such as:
+
+```{python}
+class Vec2:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y  
+
+    def dot_product(self, other):
+        ...
+        
+class Vec3:
+    def __init__(self,x,y,z):
+        self.x = x
+        self.y = y  
+        self.z = z 
+
+    def dot(self, other):
+        ...
+```
+
+We can force that these types implement an interface (i.e., an abstract base class) such that we can guarantee that objects we pass to ``print_dot_prod`` will always work by forcing them to implement a ``dot_product`` method. 
+
+We will define an abstract class called ``Vector`` that has only the required method: 
+
+`` def dot_product(self, other) `` 
+
+```{python}
+#| tags: []
+from abc import ABC, abstractmethod
+
+class Vector(ABC):
+    # an unimplemented method
+    @abstractmethod
+    def dot_product(self, other):
+        pass
+
+    # demonstrate we can have a normal method
+    def print_x(self):
+        print(self.x)
+    
+```
+
+```{python}
+# we can't instantiate abstract classes
+try:
+    v = Vector()
+except Exception as e:
+    print(repr(e))
+```
+
+```{python}
+class Vec2(Vector):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y  
+        
+    def dot_product(self, other): 
+        return self.x * other.x + self.y * other.y
+        
+class Vec3(Vector):
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y  
+        self.z = z 
+        
+    def dot_product(self, other): 
+        return self.x * other.x + self.y * other.y + self.z * other.z
+```
+
+Now `print_dot_prod` works:
+
+```{python}
+# Vec2 and Vec3 objects are instances of Vector since their classes 
+# inherit from the Vector ABC.
+v2a = Vec2(1,2)
+v2b = Vec2(3,4)
+v3a = Vec3(6,7,3)
+v3b = Vec3(1,2,3)
+
+print(isinstance(v2a, Vec2)) 
+print(isinstance(v2a, Vector)) 
+print("----")
+print(isinstance(v3a, Vec3)) 
+print(isinstance(v3a, Vector))
+```
+
+```{python}
+v2a.print_x()
+```
+
+```{python}
+print_dot_prod(v2a, v2b)
+```
+
+```{python}
+print_dot_prod(v3a, v3b)
+```
+
+## Dataclasses
+
+Python 3.7 added `dataclasses` as a handy way to create classes that are mostly responsible for representing data.
+These classes often have few or no methods defined.
+
+```{python}
+from dataclasses import dataclass
+
+@dataclass
+class InventoryItem:
+    """Class for keeping track of an item in inventory."""
+    name: str
+    unit_price: float
+    quantity_on_hand: int = 0
+
+    def total_cost(self) -> float:
+        return self.unit_price * self.quantity_on_hand
+
+# class decorator!
+# similar concept, much harder to write
+# 
+# InventoryItem = dataclass(InventoryItem)
+```
+
+
+```{python}
+wrench = InventoryItem("Wrench", 12.95, 10)
+hammer = InventoryItem("Hammer", 16, 8)
+nails = InventoryItem("Nails", 0.03, 1000)
+saw = InventoryItem("Saw", 99)
+saw2 = InventoryItem("Saw", 99)
+```
+
+```{python}
+saw == saw2
+```
+
+Dataclasses get an automatic `__init__`, `__repr__`, `__eq__`, and several other helpful options.  (Even more is possible via the decorator: https://docs.python.org/3/library/dataclasses.html)
+
+```{python}
+#| tags: []
+nails.total_cost()
+```
+
+Beyond this, additional methods/staticmethods/etc. can be defined in the usual way.
+
+This syntax uses Python's type-hinting, and if you're looking to use it you'll want to get familiar with the rules
+around complex types: <https://docs.python.org/3/library/typing.html>
+
+```{python}
+# instead of returning tuples and 
+# remembering the positional order, can instead
+@dataclass
+class RetType:
+    data: list[int]
+    counter: int
+
+def fn():
+    return RetType([], counter)
+```

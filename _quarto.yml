@@ -1,0 +1,60 @@
+project:
+  type: book
+filters:
+  - include-code-files
+# resources:
+#   - "toys/*"
+book:
+  title: "`dir(python)`"
+  chapters:
+    - index.qmd
+    - part: "Python Overview"
+      chapters:
+        - what-is-python/index.qmd
+        - running-python/index.qmd
+        - variables/index.qmd
+        - statements/index.qmd
+        - collections/index.qmd
+        - identity/index.qmd
+    - part: "Understanding Functions"
+      chapters:
+        - arguments/index.qmd
+        - functional/index.qmd
+        - comprehensions/index.qmd
+        - generators/index.qmd
+        - scope/index.qmd
+        - decorators/index.qmd
+    - part: "Modules & Objects"
+      chapters:
+       - oop/index.qmd
+       - inheritance/index.qmd
+       - exceptions/index.qmd
+       - pdm/index.qmd
+       - more-classes/index.qmd
+       - packages/index.qmd
+    - part: "Odds & Ends"
+      chapters:
+       - data-structures/index.qmd
+       - testing/index.qmd
+
+  appendices:
+    - files/index.qmd
+  #  - typing/index.qmd
+  #  - performance w/ decorators/perofrmance.md
+  twitter-card: true
+  # page-footer:
+  #   center: |
+# <p xmlns:cc="https//creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://notes.jpt.sh/dir-python/">dir(python)</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://jpt.sh">James Turk</a> is licensed <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a></p>
+  body-header: |
+      <script async src="https://plausible.io/js/pa-hgzE0cXTE_eyyQ7LddSDg.js"></script>
+      <script>
+        window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+        plausible.init()
+      </script>
+
+number-depth: 1
+format:
+  html:
+    theme: yeti #cosmo
+#    css: styles.css
+    toc: true

@@ -1,0 +1,264 @@
+---
+title: Scope
+jupyter: python3
+---
+
+```python
+x = 12
+
+def f(x):
+    print(x)
+
+def h():
+    x = 3
+    def g():
+        print(x)
+    
+```
+
+The above code has three different variables named x, each independent from one another.
+
+To determine which name `print(x)` is referring to, we have to understand **scope**.
+
+**Scope** in Python is determined by the location of an assignment, or presence in a parameter list.
+
+We've dealt with two types of scope so far:
+
+- module scope (Global)
+- function scope (Local)
+
+Anything declared inside of a function, including its parameter names, are considered *local to that function*.
+
+## Python's four scopes
+
+Assignment statements create or change local names by default.
+
+The scope can be
+
+- Local: Scope of the current function.
+- Enclosing: Scope of any enclosing functions.
+- Global (sometimes called Module): Scope of the file.
+- Built-in: Built-ins.
+
+**LEGB**
+
+If the name is not found after this search, an exception is raised.
+
+## Local vs. Global
+
+Local scope refers to variables in the current function, global/module scope refers to anything at the top-level of a file:
+
+```{python}
+# demo.py
+
+x = 10000     # global scope
+
+def f(x, y):
+    z = 3
+    print("locals=", locals())
+    print("global names", {k for k in globals() if k[0] != "_"})
+
+f(1, 2)
+```
+
+The functions `locals()` and `globals()` can be used to view these for debugging purposes.
+
+### Modifying a global variable within a function
+
+It is possible for a function to modify a global mutable:
+
+```{python}
+d = {"key": 123}
+
+def f():
+    d["key"] = 456
+
+f()
+
+# changes to d persist outside function, mutability!
+print(d)
+```
+
+Despite being possible, this is generally a **bad idea**, mutability is why using globals makes programs hard to follow.
+
+What if we instead try to change an immutable via **reassignment**?
+
+```{python}
+s = "hello "
+
+def f():
+    s += " world!"   # attempt to both use & reassign s
+
+try:
+    f()
+except Exception as e:
+    print(repr(e))
+```
+
+### `global`
+
+Very very occasionally, we want to allow for this:
+
+```{python}
+s = "hello "
+
+def f():
+    # indicates that the name s within the function refers to the global s
+    global s
+    s += " world!"   # attempt to both use & reassign s
+
+try:
+    f()
+    print("s after function:", s)
+except Exception as e:
+    print(repr(e))
+```
+
+This is a **bad idea** for the same reason that modifying the mutable was, tracking changes to global state makes it very hard to reason about functions.
+
+```python
+# this seems like a reasonably safe use of globals
+NUM_ENTRIES = 1000
+SECRET_KEY = "1899232-32kldfj3"
+IGNORED_KEYS = ["middle_name", "old_badge_num"]
+
+# looking at this code, one assumes that it'd be possible to reorder/parallelize
+# clean_data_part1 and part2, but if the author of these functions for some
+# reason used `global`, or modifies the list IGNORED_KEYS, there are hard-to-observe
+# actions that can lead to subtle bugs
+data = read_data()
+data = clean_data_part1(data)
+data = clean_data_part2(data)
+publish_data(data)
+```
+
+## `builtins`
+
+Built-in scope is above global scope, if a variable does not exist at the global/module level, a final scope is searched.
+
+When you use functions like `print()`, `dict()`, or `map()`, those are from the builtin scope:
+
+```{python}
+for name in dir(__builtins__):
+    if name[0].islower():
+        print(name)
+```
+
+## Enclosing Scope
+
+Remember, our scope lookup order is LEGB: local, **enclosing**, global, built-in.
+
+Enclosing scope exists when we have nested functions:
+
+```{python}
+# here we see that f2 can access f1's y, and that there
+# are two distinct x variables, inside f1 and f2
+def f1():
+    x = "OUTER"
+    y = "from enclosing"
+    def f2():
+        x = "INNER"
+        print("y=", y)
+        print("inside f2 x=", x)
+    print("inside f1 before f2 has been called x=", x)
+    f2()
+    print("inside f1 after f2 has been called", x)
+
+f1()
+```
+
+### Closures
+
+When a function is nested inside another function, future calls can continue to access the original enclosing scope.
+
+The combination of a nested function and its enclosing scope is called a closure.
+
+```{python}
+def make_func(n):
+    def f(x):
+        # n: locally scoped to make_func() < enclosing scope
+        # x: locally scoped to f()
+        # we are using the n from the enclosing scope
+        return x ** n 
+    return f
+```
+
+```{python}
+to_the_third = make_func(3)
+to_the_third(10) # remembers the n from the enclosing scoped
+```
+
+```{python}
+squared = make_func(2)
+squared(10)  # has it's own distinct n from it's closure
+```
+
+We can use this to create cache behavior:
+
+```{python}
+import math
+
+def make_cached_calc():
+    prior_calls = {}
+    
+    def calc(x, y):
+        # this portion only runs if we haven't seen x, y before
+        if (x, y) not in prior_calls:
+            print(f"doing computation on {x} and {y}...")
+            # do 'expensive' computation
+            answer = math.sin(x) + math.exp(y)
+            # save to cache
+            prior_calls[x, y] = answer
+
+        # always runs
+        print("cache=", prior_calls)
+        # retrieve from cache, will be present by this point
+        return prior_calls[x, y]
+
+    # return function w/ enclosing scope of prior_calls    
+    return calc
+
+# obtain inner function
+do_computation = make_cached_calc()
+```
+
+```{python}
+do_computation(1, 2)
+```
+
+```{python}
+do_computation(1, 2)
+```
+
+```{python}
+do_computation(0.5, 0.7)
+```
+
+```{python}
+# has own enclosure
+do_computation2 = make_cached_calc()
+do_computation2(1, 2)
+```
+
+
+### `nonlocal`
+
+There is also a `nonlocal`, which allows modifying a variable declared in **enclosing** scope.
+
+Like `global`, it is placed inside the **inner** function, allowing access to an enclosing variable (not vice-versa!).
+
+
+```python
+def create_counter_func():
+    counter = 0
+    def f():
+        # gives us permission to access the enclosing counter
+        nonlocal counter
+        counter += 1
+        print(f"called {counter} times")
+    return f
+
+g = create_counter_func()
+h = create_counter_func()
+```
+
