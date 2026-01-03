@@ -11,7 +11,7 @@ An expression is anything which evaluates to some *value*.
 
 **Some Expressions**
 
-- `3.145`
+- `3.14`
 - `"hello"`
 - `3 + 4`
 - `func(y)`
@@ -30,7 +30,7 @@ Assignment statements give a name to a value resulting from an expression.
 ```{python}
 radius = 5
 area = 3.14 * radius ** 2
-name = "James"
+name = "Tyler"
 in_class = True
 ```
 
@@ -50,7 +50,7 @@ In many languages, variables are typed, meaning that when you declare a variable
 int num_fish = 3;
 char* name = "William";;
 
-// we can not do this!
+// we cannot do this!
 num_fish = name;
 ```
 
@@ -70,7 +70,7 @@ Let's use Python's `type()` function to see that Python does indeed have types:
 print(type(radius))
 print(type(area))
 print(type(name))
-print(type(in_class))
+print(type(print))
 ```
 
 In Python, types are *inferred*, not explicitly stated.
