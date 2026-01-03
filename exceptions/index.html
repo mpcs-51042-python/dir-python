@@ -397,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="error-handling" class="level2">
 <h2 class="anchored" data-anchor-id="error-handling">Error Handling</h2>
 <p>No matter how good your code is, there’s always going to be a chance that something goes wrong.</p>
-<div id="c52fe6f5" class="cell" data-execution_count="1">
+<div id="f390ebfe" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_func(a, b):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" what can go wrong with this function? """</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> a <span class="op">&gt;</span> b:</span>
@@ -417,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="4dac8479" class="cell" data-execution_count="2">
+<div id="0c5dd0cb" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    my_func(<span class="dv">3</span>, <span class="dv">0</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
@@ -441,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="5ae5597a" class="cell" data-execution_count="3">
+<div id="049f3d07" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    my_func(<span class="dv">10</span>, <span class="dv">12</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
@@ -465,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="db11a79b" class="cell" data-execution_count="4">
+<div id="0c73bde1" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    my_func(<span class="st">"two"</span>, <span class="st">"three"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
@@ -591,19 +591,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="raising-exceptions">Raising Exceptions</h2>
 <p>If <em>your code</em> encounters a condition that it cannot handle, you can <code>raise</code> an exception.</p>
 <p>To raise an exception, you use the <code>raise</code> keyword, which similarly to <code>return</code> exits a function immediately.</p>
-<div id="ee4297b8" class="cell" data-execution_count="5">
+<div id="e597033f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(positive):</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> positive <span class="op">&lt;</span> <span class="dv">0</span>:</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"f requires a positive argument"</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> positive <span class="op">*</span> positive</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="4f668458" class="cell" data-execution_count="6">
+<div id="676fef2b" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>f(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>9</code></pre>
 </div>
 </div>
-<div id="b75dbd02" class="cell" data-execution_count="7">
+<div id="c0e3af23" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> f(<span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> exc:</span>
@@ -618,7 +618,7 @@ y= 0</code></pre>
 <section id="propagation" class="level3">
 <h3 class="anchored" data-anchor-id="propagation">Propagation</h3>
 <p>Exceptions <strong>propagate</strong> unless caught, you’ve encountered this in your own code:</p>
-<div id="16dab397" class="cell" data-execution_count="8">
+<div id="facfa627" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> inner():</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"example"</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -639,13 +639,13 @@ y= 0</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Uncaught:  Exception('example')
 Traceback (most recent call last):
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2424353647.py", line 11, in &lt;module&gt;
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2424353647.py", line 11, in &lt;module&gt;
     outer()
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2424353647.py", line 8, in outer
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2424353647.py", line 8, in outer
     middle()
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2424353647.py", line 5, in middle
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2424353647.py", line 5, in middle
     inner()
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2424353647.py", line 2, in inner
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2424353647.py", line 2, in inner
     raise Exception("example")
 Exception: example
 </code></pre>
@@ -653,7 +653,7 @@ Exception: example
 </div>
 <p>This is sometimes called “bubbling up”, the uncaught exception <em>pops functions off the call stack</em>, exiting them in LIFO “last-in-first-out” order.</p>
 <p>A <code>try/except</code> may catch the exception at any level. If the exception is caught within <code>middle</code> for instance, execution will resume in that function’s <code>except</code> block.</p>
-<div id="73b40270" class="cell" data-execution_count="9">
+<div id="e9a6754a" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> inner():</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"example"</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -682,7 +682,7 @@ Exception: example
 <section id="re-raising" class="level3">
 <h3 class="anchored" data-anchor-id="re-raising">re-raising</h3>
 <p>While an <code>except</code> usually stops propagation, sometimes you want to handle an exception and then still allow it to propagate/end the program.</p>
-<div id="767c7398" class="cell" data-execution_count="10">
+<div id="8b664577" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> risky_code():</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"running risky code..."</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"!"</span>)</span>
@@ -714,11 +714,11 @@ Handling Error: !
 saving data!
 Uncaught:  Exception('!')
 Traceback (most recent call last):
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2649118250.py", line 19, in &lt;module&gt;
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2649118250.py", line 19, in &lt;module&gt;
     main()
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2649118250.py", line 10, in main
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2649118250.py", line 10, in main
     risky_code()
-  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_28554/2649118250.py", line 3, in risky_code
+  File "/var/folders/rs/85dqs00543v8l_mvhbsxzrmh0000gn/T/ipykernel_49652/2649118250.py", line 3, in risky_code
     raise Exception("!")
 Exception: !
 </code></pre>

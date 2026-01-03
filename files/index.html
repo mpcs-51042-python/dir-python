@@ -401,11 +401,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>While the OS-level file API is typically a C API, most languages provide a low-level API that is very similar to the C API.</p>
 <p>In Python, that is present in the form of the <code>open</code> function and related types.</p>
 <p>First, we create a “file handle”, a special type that allows us to interact with an opened file. The built-in <code>open()</code> method returns this kind of handle.</p>
-<div id="4fdc6aca" class="cell" data-execution_count="1">
+<div id="af0b0cfd" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fh <span class="op">=</span> <span class="bu">open</span>(<span class="st">"file.txt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Once opened, you will use <em>methods</em> to read/modify the file:</p>
-<div id="b4b700f6" class="cell" data-execution_count="2">
+<div id="4ed7d366" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read entire file as a string</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> fh.read()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -540,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parent" class="level3">
 <h3 class="anchored" data-anchor-id="parent"><code>.parent</code></h3>
 <p><code>Path</code> objects have a <code>.parent</code> property that is equivalent to going up a directory:</p>
-<div id="27b9ea33" class="cell" data-execution_count="3">
+<div id="6ec6a7dc" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path(<span class="st">"/home/user/projects/proj-1"</span>)</span>
@@ -556,7 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="concatenation">Concatenation</h3>
 <p><code>Path</code> objects use <code>/</code> to concatenate parts of a path. (Instead of the <code>+</code> used by strings.)</p>
 <p>We can use this to build paths out of components:</p>
-<div id="be42d22e" class="cell" data-execution_count="4">
+<div id="28add6b4" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>BASE_DIR <span class="op">=</span> Path(<span class="st">"/home/james/sites/map-python-data"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> [<span class="st">"pathlib"</span>, <span class="st">"web-scraping"</span>, <span class="st">"debugging"</span>]:</span>
@@ -672,7 +672,7 @@ log_directory.mkdir(exist_ok=True, parents=True)</code></pre>
 <section id="quick-readingwriting" class="level3">
 <h3 class="anchored" data-anchor-id="quick-readingwriting">Quick Reading/Writing</h3>
 <p>If you are reading/writing the entire file in one go, instead of using the <code>IO</code> object returned by <code>open</code>, you can call <code>read_text</code> and <code>write_text</code> directly on the <code>Path</code> as a shortcut.</p>
-<div id="8108fa6e" class="cell" data-execution_count="5">
+<div id="5895e36b" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> Path(<span class="st">"file.txt"</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p.write_text(<span class="st">'Text file contents'</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>p.read_text()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

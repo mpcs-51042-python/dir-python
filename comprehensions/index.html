@@ -388,7 +388,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="list-comprehensions">List Comprehensions</h2>
 <p>Create a new list from another iterable.</p>
 <p>Remember that we can take any iterable and convert it to a list by calling <code>list()</code>:</p>
-<div id="c0a9bc1b" class="cell" data-execution_count="1">
+<div id="85e2ab22" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="st">"hello world"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(s)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -396,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The simplest list comprehension does the same thing (you should prefer <code>list</code> if this is all you are doing):</p>
-<div id="0e17462c" class="cell" data-execution_count="2">
+<div id="d9473704" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>[i <span class="cf">for</span> i <span class="kw">in</span> t]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
@@ -407,13 +407,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># basic list comprehension syntax</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>new_list <span class="op">=</span> [expression <span class="cf">for</span> var <span class="kw">in</span> iterable]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The <code>for var in iterable</code> portion declares a new temporary variable for iteration, just like a traditional for loop, but The benefit comes in when we start modifying the expression portion:</p>
-<div id="2459b0b2" class="cell" data-execution_count="3">
+<div id="0fb16b89" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>[i<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> t]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>[1, 4, 9, 16, 25]</code></pre>
 </div>
 </div>
-<div id="8758ba77" class="cell" data-execution_count="4">
+<div id="6718d333" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>[c.upper() <span class="cf">for</span> c <span class="kw">in</span> s]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>['H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D']</code></pre>
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>But they do not need to be one-to-one, we can remove some items conditionally with one more optional clause:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># full list comprehension syntax with optional if clause</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>new_list <span class="op">=</span> [expression <span class="cf">for</span> var <span class="kw">in</span> iterable <span class="cf">if</span> condition]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="11201a65" class="cell" data-execution_count="5">
+<div id="9ae17698" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> isvowel(c):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c <span class="kw">in</span> <span class="st">"aeiou"</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -437,7 +437,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nested-comprehensions" class="level3">
 <h3 class="anchored" data-anchor-id="nested-comprehensions">Nested Comprehensions</h3>
 <p>Since comprehensions are expressions, and the first clause needs to be an expression, we can nest comprehensions:</p>
-<div id="f10b54ca" class="cell" data-execution_count="6">
+<div id="fc5077b2" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># possible to nest comprehensions, but beware readability</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>faces <span class="op">=</span> (<span class="st">"K"</span>, <span class="st">"Q"</span>, <span class="st">"J"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>suits <span class="op">=</span> (<span class="st">"♠"</span>, <span class="st">"♣"</span>, <span class="st">"♦"</span>, <span class="st">"♥"</span>)</span>
@@ -451,14 +451,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="set-dict-comprehensions" class="level2">
 <h2 class="anchored" data-anchor-id="set-dict-comprehensions">Set &amp; Dict Comprehensions</h2>
 <p>It is also possible to make <code>set</code> and <code>dict</code> comprehensions by using <code>{}</code>.</p>
-<div id="3521fb20" class="cell" data-execution_count="7">
+<div id="a60b6994" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># powers of two set</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>{<span class="dv">2</span> <span class="op">**</span> n <span class="cf">for</span> n <span class="kw">in</span> [<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>]}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>{2, 4, 8, 16}</code></pre>
 </div>
 </div>
-<div id="f558b54c" class="cell" data-execution_count="8">
+<div id="2cbd7e52" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># powers of two mapping</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{n<span class="op">+</span><span class="dv">2</span>: n<span class="op">+</span><span class="dv">1</span> <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>) <span class="cf">if</span> n <span class="op">&gt;</span> <span class="dv">0</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
@@ -470,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="thinking-in-list-comprehensions" class="level2">
 <h2 class="anchored" data-anchor-id="thinking-in-list-comprehensions">Thinking in List Comprehensions</h2>
 <p>Here is a way of thinking about list comprehensions that may help you write more complex comprehensions in a natural way:</p>
-<div id="b573a5a0" class="cell" data-execution_count="9">
+<div id="3a3bac05" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_powers_lc(n, inputs):</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Given list of inputs, return each input raised to the 1st-Nth power</span></span>
@@ -489,7 +489,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">     [9, 81, 729, 6561]]</span></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="b4d8390c" class="cell" data-execution_count="10">
+<div id="51942cee" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) start with shape: </span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output will be a list of list of ints, </span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># so create simplest version of that</span></span>
@@ -500,7 +500,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[[1]]</code></pre>
 </div>
 </div>
-<div id="399ac25f" class="cell" data-execution_count="11">
+<div id="b2a3d0f4" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) expand outer list comprehension to have correct number of elements</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using inputs as foundation, we haven't modified the first term yet</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_powers_lc(n, inputs):</span>
@@ -510,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]</code></pre>
 </div>
 </div>
-<div id="2ee37922" class="cell" data-execution_count="12">
+<div id="25cbfda4" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Now expand inner list to have correct number of elements.</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_powers_lc(n, inputs):</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [[<span class="dv">1</span> <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(n)] <span class="cf">for</span> x <span class="kw">in</span> inputs]</span>
@@ -528,7 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  [1, 1, 1, 1]]</code></pre>
 </div>
 </div>
-<div id="6f58f59f" class="cell" data-execution_count="13">
+<div id="1e0b9722" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Fix initial term to do calculation</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_powers_lc(n, inputs):</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [[x<span class="op">**</span>y <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(n)] <span class="cf">for</span> x <span class="kw">in</span> inputs]</span>
@@ -546,7 +546,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  [1, 9, 81, 729]]</code></pre>
 </div>
 </div>
-<div id="fecb220e" class="cell" data-execution_count="14">
+<div id="41850e2b" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) With correct shape, make modifications to ranges/etc. as needed</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_powers_lc(n, inputs):</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [[x<span class="op">**</span>y <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n<span class="op">+</span><span class="dv">1</span>)] <span class="cf">for</span> x <span class="kw">in</span> inputs]</span>

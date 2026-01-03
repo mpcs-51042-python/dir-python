@@ -417,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="local-vs.-global" class="level2">
 <h2 class="anchored" data-anchor-id="local-vs.-global">Local vs.&nbsp;Global</h2>
 <p>Local scope refers to variables in the current function, global/module scope refers to anything at the top-level of a file:</p>
-<div id="6f5f83df" class="cell" data-execution_count="1">
+<div id="9a9b459e" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># demo.py</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">10000</span>     <span class="co"># global scope</span></span>
@@ -430,14 +430,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>f(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>locals= {'x': 1, 'y': 2, 'z': 3}
-global names {'Out', 'open', 'ojs_define', 'x', 'quit', 'exit', 'f', 'In', 'get_ipython'}</code></pre>
+global names {'Out', 'exit', 'quit', 'In', 'get_ipython', 'open', 'ojs_define', 'x', 'f'}</code></pre>
 </div>
 </div>
 <p>The functions <code>locals()</code> and <code>globals()</code> can be used to view these for debugging purposes.</p>
 <section id="modifying-a-global-variable-within-a-function" class="level3">
 <h3 class="anchored" data-anchor-id="modifying-a-global-variable-within-a-function">Modifying a global variable within a function</h3>
 <p>It is possible for a function to modify a global mutable:</p>
-<div id="3a11d3cd" class="cell" data-execution_count="2">
+<div id="a6e5f16f" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> {<span class="st">"key"</span>: <span class="dv">123</span>}</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
@@ -453,7 +453,7 @@ global names {'Out', 'open', 'ojs_define', 'x', 'quit', 'exit', 'f', 'In', 'get_
 </div>
 <p>Despite being possible, this is generally a <strong>bad idea</strong>, mutability is why using globals makes programs hard to follow.</p>
 <p>What if we instead try to change an immutable via <strong>reassignment</strong>?</p>
-<div id="dff50004" class="cell" data-execution_count="3">
+<div id="2901d851" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="st">"hello "</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
@@ -471,7 +471,7 @@ global names {'Out', 'open', 'ojs_define', 'x', 'quit', 'exit', 'f', 'In', 'get_
 <section id="global" class="level3">
 <h3 class="anchored" data-anchor-id="global"><code>global</code></h3>
 <p>Very very occasionally, we want to allow for this:</p>
-<div id="2cd3aa22" class="cell" data-execution_count="4">
+<div id="e9619e68" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="st">"hello "</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
@@ -508,7 +508,7 @@ global names {'Out', 'open', 'ojs_define', 'x', 'quit', 'exit', 'f', 'In', 'get_
 <h2 class="anchored" data-anchor-id="builtins"><code>builtins</code></h2>
 <p>Built-in scope is above global scope, if a variable does not exist at the global/module level, a final scope is searched.</p>
 <p>When you use functions like <code>print()</code>, <code>dict()</code>, or <code>map()</code>, those are from the builtin scope:</p>
-<div id="436a5433" class="cell" data-execution_count="5">
+<div id="6e6804cf" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> <span class="bu">dir</span>(__builtins__):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name[<span class="dv">0</span>].islower():</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -597,7 +597,7 @@ zip</code></pre>
 <h2 class="anchored" data-anchor-id="enclosing-scope">Enclosing Scope</h2>
 <p>Remember, our scope lookup order is LEGB: local, <strong>enclosing</strong>, global, built-in.</p>
 <p>Enclosing scope exists when we have nested functions:</p>
-<div id="64507322" class="cell" data-execution_count="6">
+<div id="c627cc57" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># here we see that f2 can access f1's y, and that there</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># are two distinct x variables, inside f1 and f2</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f1():</span>
@@ -623,7 +623,7 @@ inside f1 after f2 has been called OUTER</code></pre>
 <h3 class="anchored" data-anchor-id="closures">Closures</h3>
 <p>When a function is nested inside another function, future calls can continue to access the original enclosing scope.</p>
 <p>The combination of a nested function and its enclosing scope is called a closure.</p>
-<div id="637e4bcc" class="cell" data-execution_count="7">
+<div id="445eb03b" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_func(n):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> f(x):</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># n: locally scoped to make_func() &lt; enclosing scope</span></span>
@@ -632,14 +632,14 @@ inside f1 after f2 has been called OUTER</code></pre>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x <span class="op">**</span> n </span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> f</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="3864b9d3" class="cell" data-execution_count="8">
+<div id="2ed94fd0" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>to_the_third <span class="op">=</span> make_func(<span class="dv">3</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>to_the_third(<span class="dv">10</span>) <span class="co"># remembers the n from the enclosing scoped</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>1000</code></pre>
 </div>
 </div>
-<div id="a9d1b871" class="cell" data-execution_count="9">
+<div id="303cce12" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>squared <span class="op">=</span> make_func(<span class="dv">2</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>squared(<span class="dv">10</span>)  <span class="co"># has it's own distinct n from it's closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
@@ -647,7 +647,7 @@ inside f1 after f2 has been called OUTER</code></pre>
 </div>
 </div>
 <p>We can use this to create cache behavior:</p>
-<div id="1737b58d" class="cell" data-execution_count="10">
+<div id="4f55f0b0" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_cached_calc():</span>
@@ -673,7 +673,7 @@ inside f1 after f2 has been called OUTER</code></pre>
 <span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain inner function</span></span>
 <span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>do_computation <span class="op">=</span> make_cached_calc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="272ed71b" class="cell" data-execution_count="11">
+<div id="90dde6d7" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>do_computation(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>doing computation on 1 and 2...
@@ -683,7 +683,7 @@ cache= {(1, 2): 8.230527083738547}</code></pre>
 <pre><code>8.230527083738547</code></pre>
 </div>
 </div>
-<div id="4eb5a676" class="cell" data-execution_count="12">
+<div id="494d8ab1" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>do_computation(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>cache= {(1, 2): 8.230527083738547}</code></pre>
@@ -692,7 +692,7 @@ cache= {(1, 2): 8.230527083738547}</code></pre>
 <pre><code>8.230527083738547</code></pre>
 </div>
 </div>
-<div id="82978a80" class="cell" data-execution_count="13">
+<div id="cdd7741f" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>do_computation(<span class="fl">0.5</span>, <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>doing computation on 0.5 and 0.7...
@@ -702,7 +702,7 @@ cache= {(1, 2): 8.230527083738547, (0.5, 0.7): 2.4931782460746796}</code></pre>
 <pre><code>2.4931782460746796</code></pre>
 </div>
 </div>
-<div id="3ca921c7" class="cell" data-execution_count="14">
+<div id="fbdeb3e3" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># has own enclosure</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>do_computation2 <span class="op">=</span> make_cached_calc()</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>do_computation2(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

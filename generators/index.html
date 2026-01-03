@@ -396,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Keep in mind, we’re only using one of these integers at a time!</p>
 <p>This wasteful behavior was indeed the case in Python 2, <code>range</code> had to allocate all of the needed memory at once.</p>
 <p><em>Fortunately in Python 3, a range is lazily-evaluated, but how?</em></p>
-<div id="5c2bafc8" class="cell" data-execution_count="1">
+<div id="849afebb" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1000</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rg, <span class="bu">type</span>(rg))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -413,7 +413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="generator-expressions" class="level2">
 <h2 class="anchored" data-anchor-id="generator-expressions">Generator Expressions</h2>
 <p>When we introduced <em>comprehensions</em> we mentioned that they only made sense to use if you are planning to use the entire iterable.</p>
-<div id="83cddd5e" class="cell" data-execution_count="2">
+<div id="54737e4a" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this allocates a list of 100 integers</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>powers_of_two <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>x <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -447,7 +447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>There is one more expression that uses the comprehension-style syntax, and that is the <strong>generator expression</strong>.</p>
-<div id="e9434696" class="cell" data-execution_count="3">
+<div id="b558de61" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parenthesis () instead of square brackets [], creates a generator expression</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>powers_of_two_gen <span class="op">=</span> (<span class="dv">2</span><span class="op">**</span>x <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -461,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> num <span class="op">&gt;</span> <span class="dv">1_000_000</span>:</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;generator object &lt;genexpr&gt; at 0x108474fb0&gt;
+<pre><code>&lt;generator object &lt;genexpr&gt; at 0x105de4fb0&gt;
 &lt;class 'generator'&gt;
 1
 2
@@ -509,7 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># we usually don't see the iterator!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>While we usually don’t see the iterator, a <em>generator</em> is both <em>iterable</em> and <em>iterator</em>, so we can use <code>next</code> on them:</p>
-<div id="5f80f786" class="cell" data-execution_count="4">
+<div id="60895e6e" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>power_of_three <span class="op">=</span> (<span class="dv">3</span><span class="op">**</span>n <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">next</span>(power_of_three))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">next</span>(power_of_three))</span>
@@ -539,23 +539,23 @@ done!</code></pre>
 <p>We can also create generators by writing <strong>generator functions</strong>. These are special functions that return the <strong>generator type</strong>.</p>
 <p>Note that this is the same <em>type</em> as the generators we’ve already introduced, just a different way to create them.</p>
 <p>A function that contains the <code>yield</code> keyword, is automatically a generator function. Let’s rewrite one of our earlier examples as a function:</p>
-<div id="e7088c18" class="cell" data-execution_count="5">
+<div id="a1387164" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> powers_of_2(limit):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(limit):</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> <span class="dv">2</span><span class="op">**</span>n</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Calling this function returns a generator:</p>
-<div id="6c63ceff" class="cell" data-execution_count="6">
+<div id="779ffc1a" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p2g <span class="op">=</span> powers_of_2(<span class="dv">10</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(p2g)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(p2g))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;generator object powers_of_2 at 0x108474450&gt;
+<pre><code>&lt;generator object powers_of_2 at 0x105de4450&gt;
 &lt;class 'generator'&gt;</code></pre>
 </div>
 </div>
 <p>We can iterate over it with a for loop:</p>
-<div id="4c53af2a" class="cell" data-execution_count="7">
+<div id="81653827" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> p2g:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -572,7 +572,7 @@ done!</code></pre>
 </div>
 </div>
 <p>All generators can only be consumed once, so an attempt to call <code>next()</code> leads to an error:</p>
-<div id="68c3d617" class="cell" data-execution_count="8">
+<div id="fa5119d0" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="bu">next</span>(p2g))</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
@@ -582,7 +582,7 @@ done!</code></pre>
 </div>
 </div>
 <p>Generator functions do give us an option that expressions did not, we can create a fresh generator by calling the function again:</p>
-<div id="a7820aeb" class="cell" data-execution_count="9">
+<div id="7f7ce75f" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g1 <span class="op">=</span> powers_of_2(<span class="dv">10</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>g2 <span class="op">=</span> powers_of_2(<span class="dv">10</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -605,7 +605,7 @@ done!</code></pre>
 </div>
 </div>
 <p>Generator functions can contain multiple <code>yield</code>, each <code>yield</code> <strong>pauses</strong> execution of the generator. The internal state of the function remains intact, unlike <strong>return</strong>.</p>
-<div id="04b1b8cf" class="cell" data-execution_count="10">
+<div id="42793cce" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simple_generator_func():</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"start"</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> <span class="dv">1</span></span>
@@ -614,7 +614,7 @@ done!</code></pre>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"one more"</span>)</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> <span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="c2cea9ef" class="cell" data-execution_count="11">
+<div id="35a98d82" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> simple_generator_func()</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"got (first)"</span>, <span class="bu">next</span>(g))</span>
@@ -636,14 +636,14 @@ got 3</code></pre>
 <section id="infinite-generators" class="level3">
 <h3 class="anchored" data-anchor-id="infinite-generators">Infinite Generators</h3>
 <p>Generators do not need to ever actually exit, let’s create an abstraction for our powers-of-n generators:</p>
-<div id="12396054" class="cell" data-execution_count="12">
+<div id="0dbc0454" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> powers_of_n(n):</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> n <span class="op">**</span> i</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        i <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="8a75e474" class="cell" data-execution_count="13">
+<div id="6073dff0" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pow5 <span class="op">=</span> powers_of_n(<span class="dv">5</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">next</span>(pow5))</span>
@@ -661,7 +661,7 @@ got 3</code></pre>
 </div>
 <p>This code works because we’re only asking for one more iteration of the loop, each time we call <code>next</code> the code in the function runs until it hits the next <code>yield</code>.</p>
 <p>We can also use this in a loop <em>if we’re careful to break!</em>:</p>
-<div id="0af1f9d6" class="cell" data-execution_count="14">
+<div id="b83f19a6" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> powers_of_n(<span class="dv">7</span>):</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(x)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># it is up to the calling loop to break, without this we run forever!</span></span>
@@ -682,7 +682,7 @@ got 3</code></pre>
 <h2 class="anchored" data-anchor-id="discussion-benefits-of-generators">Discussion: Benefits of Generators</h2>
 <section id="exercise-write-your-own-range" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-write-your-own-range">Exercise: Write your own <code>range</code></h3>
-<div id="eac38e05" class="cell" data-execution_count="15">
+<div id="88e788f2" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># there is a third optional parameter to range, the *step*</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">2</span>):</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

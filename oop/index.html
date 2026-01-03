@@ -389,7 +389,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="motivations">Motivations</h2>
 <p>We often find ourselves working with many functions that use the same data structure(s).</p>
 <p>Let’s look at a hypothetical program that only uses the types we’ve learned so far in Python:</p>
-<div id="61124624" class="cell" data-tags="[]" data-execution_count="1">
+<div id="6d0487db" class="cell" data-tags="[]" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>person_a <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"Andy"</span>, <span class="st">"costume"</span>: <span class="st">"Cowboy"</span>, <span class="st">"candy"</span>: []}</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>person_b <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"Gil"</span>, <span class="st">"costume"</span>: <span class="st">"Robot"</span>, <span class="st">"candy"</span>: []}</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>person_c <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"Lisa"</span>, <span class="st">"costume"</span>: <span class="st">"Ghost"</span>, <span class="st">"candy"</span>: []}</span>
@@ -429,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="classes-methods" class="level2">
 <h2 class="anchored" data-anchor-id="classes-methods">Classes &amp; Methods</h2>
 <p>The code above might be rewritten as:</p>
-<div id="38bf6645" class="cell" data-tags="[]" data-execution_count="2">
+<div id="97a6851f" class="cell" data-tags="[]" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Person:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, name, costume):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
@@ -468,7 +468,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Constructor</strong> - A special method that creates &amp; populates an instance of a class.</li>
 </ul>
 <p>When we use the object, we create <strong>instances</strong> of our class, and use those as we would any other type.</p>
-<div id="47bde0a2" class="cell" data-execution_count="3">
+<div id="9df60d53" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trick_or_treat(person, house):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        candy <span class="op">=</span> house.get_candy()</span>
@@ -478,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> NoCandy:</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        do_trick(person, house)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cbb6466c" class="cell" data-execution_count="4">
+<div id="d6e292e5" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> Person(<span class="st">"James"</span>, <span class="st">"Wolfman"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> Person(<span class="st">"Fred"</span>, <span class="st">"Mummy"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>l1 <span class="op">=</span> <span class="bu">list</span>()</span>
@@ -496,25 +496,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We’ve been doing this all along! <code>list</code>, <code>dict</code>, and all the rest down to <code>int</code> and <code>None</code> are objects with their own data and methods.</p>
 <p><code>isinstance</code> is the preferred way to check if an item is of a particular type.</p>
 <p>It can return true for multiple types, we’ll see why this is the case shortly.</p>
-<div id="ee090ed3" class="cell" data-tags="[]" data-execution_count="5">
+<div id="cc4b7a52" class="cell" data-tags="[]" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">isinstance</span>([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="bu">list</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>True</code></pre>
 </div>
 </div>
-<div id="67ed317a" class="cell" data-execution_count="6">
+<div id="d2ecdeba" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">isinstance</span>([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="bu">tuple</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>False</code></pre>
 </div>
 </div>
-<div id="896f0436" class="cell" data-execution_count="7">
+<div id="29c3247e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">isinstance</span>([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="bu">object</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>True</code></pre>
 </div>
 </div>
-<div id="a71bb218" class="cell" data-tags="[]" data-execution_count="8">
+<div id="16c34992" class="cell" data-tags="[]" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="bu">set</span>([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>])</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># using constructors here for demo purposes, generally would use a literal (e.g. [], 0, "") for these</span></span>
@@ -530,7 +530,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>['', 0, 0.0, {1, 2, 3}, &lt;built-in function print&gt;]</code></pre>
 </div>
 </div>
-<div id="d9982571" class="cell" data-tags="[]" data-execution_count="9">
+<div id="3dbeb6c4" class="cell" data-tags="[]" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>[<span class="bu">isinstance</span>(item, <span class="bu">object</span>) <span class="cf">for</span> item <span class="kw">in</span> ll]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>[True, True, True, True, True]</code></pre>
@@ -551,7 +551,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We often use the blueprint analogy for a class, a class tells us <em>how an object will act</em>, but on its own doesn’t do anything until instantiated.</p>
 <p>The blueprint can specify features that vary from car to car (color, transmission type, etc.) and behavior that is common among all cars.</p>
 <p>We can create multiple car <strong>instances</strong> with different values for a given attribute.</p>
-<div id="bc754c52" class="cell" data-execution_count="10">
+<div id="b3bdd406" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Car:</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># __init__ is a special method</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># known as a double-underscore or dunder method</span></span>
@@ -576,16 +576,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Chevy Volt 2022</code></pre>
 </div>
 </div>
-<div id="af333aa8" class="cell" data-execution_count="11">
+<div id="488366d4" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>car3 <span class="kw">is</span> car2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>True</code></pre>
 </div>
 </div>
-<div id="45d85cff" class="cell" data-execution_count="12">
+<div id="c7204d2c" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>car2.year <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="65a676ec" class="cell" data-execution_count="13">
+<div id="3117f8a0" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(car3.year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2023</code></pre>
@@ -597,7 +597,7 @@ Chevy Volt 2022</code></pre>
 <h3 class="anchored" data-anchor-id="self-methods"><code>self</code> &amp; methods</h3>
 <p>The first parameter of methods is always <code>self</code>.</p>
 <p>This parameter is never passed directly, but is a local reference to the object the instance is being called upon.</p>
-<div id="1aad22f8" class="cell" data-tags="[]" data-execution_count="14">
+<div id="43eb62bd" class="cell" data-tags="[]" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Car:</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, make, model, year):</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.make <span class="op">=</span> make</span>
@@ -620,13 +620,13 @@ Chevy Volt 2022</code></pre>
 <pre><code>0</code></pre>
 </div>
 </div>
-<div id="3a73a23b" class="cell" data-tags="[]" data-execution_count="15">
+<div id="88a5c48e" class="cell" data-tags="[]" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>car1.print_report()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2019 Honda Civic with 0 miles</code></pre>
 </div>
 </div>
-<div id="578db907" class="cell" data-tags="[]" data-execution_count="16">
+<div id="07ea82ed" class="cell" data-tags="[]" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>car2.drive(<span class="dv">500</span>)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(car2.mileage)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>car2.print_report()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -635,13 +635,13 @@ Chevy Volt 2022</code></pre>
 2022 Chevy Volt with 500 miles</code></pre>
 </div>
 </div>
-<div id="ffb1f87d" class="cell" data-tags="[]" data-execution_count="17">
+<div id="c1589f47" class="cell" data-tags="[]" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>car1.print_report()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2019 Honda Civic with 0 miles</code></pre>
 </div>
 </div>
-<div id="79767dcb" class="cell" data-tags="[]" data-execution_count="18">
+<div id="f7b0e463" class="cell" data-tags="[]" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(car1.mileage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0</code></pre>
@@ -652,7 +652,7 @@ Chevy Volt 2022</code></pre>
 <h4 class="anchored" data-anchor-id="how-does-this-work">How does this work?</h4>
 <p>This is confusing at first glance, where does <code>self</code> come from?</p>
 <p>It is actually the “parameter before the dot”.</p>
-<div id="e67fadc3" class="cell" data-execution_count="19">
+<div id="a4581440" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># explicitly call Car.print_report and pass self</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>Car.print_report(car2)</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -662,7 +662,7 @@ Chevy Volt 2022</code></pre>
 <pre><code>2022 Chevy Volt with 500 miles</code></pre>
 </div>
 </div>
-<div id="04e946c4" class="cell" data-execution_count="20">
+<div id="ed19cb58" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is true of all types</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>ll <span class="op">=</span> []</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>ll.append(<span class="dv">3</span>)</span>
@@ -676,7 +676,7 @@ Chevy Volt 2022</code></pre>
 </section>
 <section id="what-happens-if-self-is-omitted" class="level3">
 <h3 class="anchored" data-anchor-id="what-happens-if-self-is-omitted">What happens if <code>self</code> is omitted?</h3>
-<div id="bd7aa372" class="cell" data-execution_count="21">
+<div id="845f9bb3" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Mistake:</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"constructor!"</span>)</span>
@@ -709,12 +709,12 @@ TypeError('Mistake.method_no_self() takes 0 positional arguments but 1 was given
 </ul>
 <p><strong>Best practice: create all attributes inside constructor!</strong></p>
 <p>Why?</p>
-<div id="c05f7e2a" class="cell" data-tags="[]" data-execution_count="22">
+<div id="076d4651" class="cell" data-tags="[]" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>my_car <span class="op">=</span> Car(<span class="st">"DMC"</span>, <span class="st">"DeLorean"</span>, <span class="dv">1982</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>my_car.driver_name <span class="op">=</span> <span class="st">"Marty"</span> <span class="co"># allowed, but to be avoided</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>my_car.whatever_i_want <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="76c39790" class="cell" data-execution_count="23">
+<div id="fbec9a7f" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(my_car.driver)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>None</code></pre>
@@ -725,13 +725,13 @@ TypeError('Mistake.method_no_self() takes 0 positional arguments but 1 was given
 <h3 class="anchored" data-anchor-id="exception-to-the-rule-function-objects">Exception to the rule: function objects</h3>
 <p>Functions are objects, and can have attributes assigned to them as well.</p>
 <p>We sometimes do this since there’s no opportunity to assign them before. (Because functions do not have constructors we can modify.)</p>
-<div id="690596a8" class="cell" data-tags="[]" data-execution_count="24">
+<div id="aa25349a" class="cell" data-tags="[]" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"called f()"</span>)</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#f.call_count = 0 # NO</span></span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>f.call_count <span class="op">=</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="be7f7cbd" class="cell" data-tags="[]" data-execution_count="25">
+<div id="73f0d6b1" class="cell" data-tags="[]" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>f.call_count <span class="op">+=</span> <span class="dv">1</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>f()</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(f.call_count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -740,7 +740,7 @@ TypeError('Mistake.method_no_self() takes 0 positional arguments but 1 was given
 1</code></pre>
 </div>
 </div>
-<div id="498c571c" class="cell" data-tags="[]" data-execution_count="26">
+<div id="c04cbe76" class="cell" data-tags="[]" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># using a decorator to add call_count to any function</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> counter(func):</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#inner.call_count</span></span>
@@ -751,17 +751,17 @@ TypeError('Mistake.method_no_self() takes 0 positional arguments but 1 was given
 <span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    inner.call_count <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> inner</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="a0ee6ca7" class="cell" data-tags="[]" data-execution_count="27">
+<div id="233cb91c" class="cell" data-tags="[]" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="at">@counter</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"called f()"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="8a3fbfac" class="cell" data-tags="[]" data-execution_count="28">
+<div id="cd415995" class="cell" data-tags="[]" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="at">@counter</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g():</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"called g()"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="da718aea" class="cell" data-tags="[]" data-execution_count="29">
+<div id="641f1ac6" class="cell" data-tags="[]" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>f()</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>f()</span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>f()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -774,7 +774,7 @@ call count 3
 called f()</code></pre>
 </div>
 </div>
-<div id="82907553" class="cell" data-tags="[]" data-execution_count="30">
+<div id="b9a0d22a" class="cell" data-tags="[]" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>g()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>call count 1
@@ -826,7 +826,7 @@ called g()</code></pre>
 <li><code>__str__</code></li>
 <li><code>__eq__</code></li>
 </ul>
-<div id="6a84580e" class="cell" data-execution_count="31">
+<div id="021d07a7" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Car: </span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, make, model, year):</span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._make <span class="op">=</span> make </span>
@@ -855,25 +855,25 @@ called g()</code></pre>
 <span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># common to only define __repr__, then add </span></span>
 <span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># __str__ = __repr__</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="e9dfbf25" class="cell" data-execution_count="32">
+<div id="d51b1416" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>truck <span class="op">=</span> Car(<span class="st">"Ford"</span>, <span class="st">"F-150"</span>, <span class="dv">1985</span>)</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>truck2 <span class="op">=</span> Car(<span class="st">"Ford"</span>, <span class="st">"F-150"</span>, <span class="dv">1985</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="05cffb45" class="cell" data-execution_count="33">
+<div id="4a7af327" class="cell" data-execution_count="33">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stating a variable name in the REPL will show the `repr`</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>truck</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="33">
 <pre><code>repr Car(Ford, F-150, 1985, mileage=0)</code></pre>
 </div>
 </div>
-<div id="c5e40fe7" class="cell" data-execution_count="34">
+<div id="ee33291d" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># printing a variable will call the `str`</span></span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(truck)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>str 1985 Ford F-150 with 0 miles</code></pre>
 </div>
 </div>
-<div id="b781b87e" class="cell" data-execution_count="35">
+<div id="0ea83b5e" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we can also cast using `str()`</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>var <span class="op">=</span> <span class="bu">str</span>(truck)</span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>var</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -881,14 +881,14 @@ called g()</code></pre>
 <pre><code>'str 1985 Ford F-150 with 0 miles'</code></pre>
 </div>
 </div>
-<div id="39859e5c" class="cell" data-execution_count="36">
+<div id="a2cf298a" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calls __eq__</span></span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>truck <span class="op">==</span> truck2 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>True</code></pre>
 </div>
 </div>
-<div id="0efc16d8" class="cell" data-execution_count="37">
+<div id="7dd30275" class="cell" data-execution_count="37">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># truck == truck2, rewritten as </span></span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>truck.<span class="fu">__eq__</span>(truck2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
