@@ -58,3 +58,6 @@ format:
     theme: yeti #cosmo
 #    css: styles.css
     toc: true
+
+execute:
+  python: .venv/bin/python
