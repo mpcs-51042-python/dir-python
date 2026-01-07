@@ -249,7 +249,7 @@ The second element is the first command line argument, and so on.
 If you take the file `argdemo.py`:
 
 
-```{.python include="argdemo.py"}
+```{.python include="packages/argdemo.py"}
 ```
 
 Executing it lets you see how `argv` works in practice:
