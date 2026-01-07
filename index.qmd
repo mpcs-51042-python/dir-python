@@ -13,19 +13,19 @@ This course assumes that you have basic familiarity with Python and programming,
 
 ### Course Resources
 
-- [Course Website](https://mpcs51042.jpt.sh)
+- [Course Website](https://python.tylerskluzacek.com)
 - [UChicago CS Student Resource Guide](https://uchicago-cs.github.io/student-resource-guide/)
 
 ### About
 
-These notes were originally written by James Turk for [MPCS 51042](https://mpcs51042.jpt.sh) at the University of Chicago.
+These notes were originally written by James Turk for MPCS 51042 at the University of Chicago.
 
 Edited by Tyler J. Skluzacek
 
 
 They are not meant to be a complete resource on Python, but to guide my lectures.
 
-If you find them useful, or notice any issues, [let me know](mailto:hi@jpt.sh).
+If you find them useful, or notice any issues, [let me know](mailto:hi@skluzacek@uchicago.edu).
 
 
 ::: {.callout-note}
@@ -37,7 +37,7 @@ If you find them useful, or notice any issues, [let me know](mailto:hi@jpt.sh).
     dir(python)
   </a>
   by
-  <a rel="cc:attributionURL dct:creator"
+  <a rel="cc:attributionURL djpt.shct:creator"
      property="cc:attributionName"
      href="https://www.jpt.sh">
     James Turk
